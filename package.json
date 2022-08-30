@@ -1,0 +1,16 @@
+{
+  "name": "ai18n",
+  "version": "1.0.0",
+  "description": "i18n",
+  "author": "nizhm",
+  "private": true,
+  "main": "reader/i18nReader.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "// exceljs": "https://github.com/exceljs/exceljs#readme",
+  "dependencies": {
+    "exceljs": "^4.3.0"
+  },
+  "license": "ISC"
+}
