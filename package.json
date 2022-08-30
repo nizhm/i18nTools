@@ -1,0 +1,27 @@
+{
+  "name": "i18n",
+  "version": "1.0.0",
+  "description": "i18n tools",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nizhm/i18n.git"
+  },
+  "keywords": [
+    "i18n"
+  ],
+  "author": "nizhm",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nizhm/i18n/issues"
+  },
+  "homepage": "https://github.com/nizhm/i18n#readme",
+  "// exceljs": "https://github.com/exceljs/exceljs#readme",
+  "dependencies": {
+    "exceljs": "^4.3.0"
+  }
+}
