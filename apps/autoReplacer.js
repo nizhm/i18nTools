@@ -4,7 +4,12 @@ const { VueComponent, keyToReplacement } = require('../tools/i18nAutoReplacement
 const { flatKeysList } = require('../tools/directoryReader');
 
 (async () => {
+  // 中文文件位置
   const cnDataPath = 'D:\\Projects\\UMC\\umc-web\\src\\lang\\cm\\zh.js';
+  // zh.js的对象嵌套深度，每层深度只会读取value不是对象类型的key
+  // 空数组表示取对象的第一层属性
+  // 单个元素数组表示取对象的某个模块的属性（第二层）
+  // 如果要取第三层属性，另外再加两个元素的数组，比如['cm', 'security']，表示取cm.security
   const moduleLevel = [
     [],
     ['cm']
@@ -38,9 +43,10 @@ const { flatKeysList } = require('../tools/directoryReader');
 
   // 开始
   const taskBlockQueue = [];
+  const vueFiles = files['vue'] || [];
+  const jsFiles = files['js'] || [];
 
   // 处理vue文件
-  const vueFiles = files['vue'] || [];
   while(vueFiles.length) {
     taskBlockQueue.push([...vueFiles.splice(0, taskBlockSize)]);
   }
@@ -126,7 +132,6 @@ const { flatKeysList } = require('../tools/directoryReader');
   }
 
   // 处理js文件
-  const jsFiles = files['js'] || [];
   while(jsFiles.length) {
     taskBlockQueue.push([...jsFiles.splice(0, taskBlockSize)]);
   }
