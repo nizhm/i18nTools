@@ -1,12 +1,29 @@
-(async () => {
-  const { directoryReader, extractFiles } = require('../reader/directoryReader.js');
-  const { readFileSync: reader, writeFileSync: writer } = require('fs');
+const { directoryReader, extractFiles } = require('../tools/directoryReader.js');
+const { readFileSync: reader, writeFileSync: writer } = require('fs');
+const { VueComponent, keyToReplacement } = require('../tools/i18nAutoReplacement');
+const { flatKeysList } = require('../tools/directoryReader');
 
-  const taskBlockSize = 10;
-  const directoryPath = 'D:\\Projects\\UMC\\umc-web\\src\\views\\sul';
-  const excludeDirectory = ['node_modules', 'browser-env', 'js-API'];
+(async () => {
+  const cnDataPath = 'D:\\Projects\\UMC\\umc-web\\src\\lang\\zh.js';
+  const moduleLevel = [
+    [],
+    ['common']
+  ];
+
+  // 需替换的文件所在文件夹
+  const directoryPath = 'D:\\Projects\\UMC\\umc-web\\src\\views\\cm';
+  const excludeDirectory = ['node_modules', 'backend-emp', 'frontend-emp', 'security-emp'];
   const includeFile = ['vue'];
 
+  // 单次任务处理的文件数量
+  const taskBlockSize = 10;
+
+  // 获取中文i18n文件，并转换格式
+  const cnData = require(cnDataPath);
+  const flatCnData = flatKeysList(cnData, moduleLevel);
+  const replacementList = keyToReplacement(flatCnData);
+
+  // 读取目标文件夹中所有文件
   const directoryContent = directoryReader(
     directoryPath,
     {
@@ -14,65 +31,14 @@
       includeFile
     }
   );
-
   const files = extractFiles(directoryContent);
+  writer('../output/files.json', JSON.stringify(files, null, 2));
 
-  const replaceComments = str => {
-    const multiHtmlReg = /<!--[\w\W\n\s]+?-->/g;
-    const singleHtmlReg = /<!--.*?-->/g;
-    const multiJsReg = /\/\*(?:(?!\*\/).|[\n\r])*\*\//g;
-    const singleJsReg = /\/\/.*/g;
-    const reg = new RegExp(
-      [
-        multiHtmlReg.source,
-        singleHtmlReg.source,
-        multiJsReg.source,
-        singleJsReg.source
-      ].join('|'),
-      'g'
-    );
-    str = str
-      // .replace(multiHtmlReg, '')
-      // .replace(singleHtmlReg, '')
-      // .replace(multiJsReg, '')
-      // .replace(singleJsReg, '')
-      .replace(reg, '');
-    return str;
-  };
-
-  const createTagReg = tagName => new RegExp(`<${tagName}[^>]*>[\\s\\S]*<\\/${tagName}>`, 'gi');
-
-  const replacementList = [
-    {
-      i18nKey: '',
-      reg: '',
-      templateReplacement: '',
-      scriptReplacement: '',
-      jsReplacement: ''
-    }
-  ];
-  const i18nImport = '';
-
-
-// 开始
+  // 开始
   const taskBlockQueue = [];
 
-// 处理vue文件
+  // 处理vue文件
   const vueFiles = files['vue'] || [];
-  const templateTagReg = createTagReg('template');
-  const scriptTagReg = createTagReg('script');
-  const styleTagReg = createTagReg('style');
-  class VueComponent {
-    constructor(fileText) {
-      const template = fileText.match(templateTagReg);
-      const script = fileText.match(scriptTagReg);
-      const style = fileText.match(styleTagReg);
-
-      this.template = template ? template[0] : '';
-      this.script = script ? '\n\n' + script[0] : '';
-      this.style = style ? '\n\n' + style[0] + '\n' : '\n';
-    }
-  }
   while(vueFiles.length) {
     taskBlockQueue.push([...vueFiles.splice(0, taskBlockSize)]);
   }
@@ -104,7 +70,7 @@
     }
   }
 
-// 处理js文件
+  // 处理js文件
   const jsFiles = files['js'] || [];
   while(jsFiles.length) {
     taskBlockQueue.push([...jsFiles.splice(0, taskBlockSize)]);
@@ -133,4 +99,4 @@
     }
   }
 
-})()
+})();

@@ -1,8 +1,8 @@
 (async () => {
   const moduleName = 'common';
   const sheetName = '通用词语汇总';
-  const { i18nReader } = require('../reader/i18nReader');
-  await i18nReader(
+  const { excelToJs } = require('../../tools/i18nExcelToJs');
+  await excelToJs(
     moduleName,
     sheetName,
     {

@@ -1,18 +1,21 @@
-(() => {
-  const { writeFileSync: writer } = require('fs');
+const { writeFileSync: writer } = require('fs');
 
-  // 英文数据所在单元格；
-  // 取哪一行的值生成的函数就适用在哪一行；
-  const enCell = 'D3';
+const createAutoKeyFun = (
+  enCell,
+  option = {}
+) => {
+  const defaultOption = {
+    keyFormat: 'lowerCamelCase',
+    maxWord: 5
+  };
+  const opt = Object.assign({}, defaultOption, option);
+  const {
+    keyFormat,
+    maxWord
+  } = opt;
 
   // 找空格位置时用的占位符号；
   const holder = '&END&';
-
-  // key暂时只支持`lowerCamelCase`和`UpperCamelCase`;
-  const keyFormat = 'lowerCamelCase';
-
-  // key的最大单词数量；
-  const maxWord = 5;
 
   // excel中，两个双引号表示一个双引号；
   // 此处不用放空格，中间处理需要用到空格，最后会一起去掉；
@@ -96,5 +99,9 @@
       `SUBSTITUTE(${ keyFromSentence }," ","")` +
     `)`;
 
-  writer('../output/keyFun.txt', keyFun);
-})();
+  writer('../output/keyFun.txt', keyFun);;
+}
+
+module.exports = {
+  createAutoKeyFun
+}

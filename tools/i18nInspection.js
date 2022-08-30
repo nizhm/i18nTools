@@ -1,8 +1,7 @@
 const path = require('path')
+const { directoryReader, extractFiles } = require('./directoryReader');
 
 const langPath = 'D:\\Projects\\UMC\\umc-web\\src\\lang';
-
-const { directoryReader, extractFiles } = require('../reader/directoryReader');
 
 const excludeDirectory = ['node_modules', 'elementLang'];
 const includeFile = ['js'];

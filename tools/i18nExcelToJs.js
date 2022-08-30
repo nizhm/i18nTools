@@ -1,13 +1,14 @@
-module.exports.i18nReader = async (
+const { writeFileSync: writer } = require('fs');
+const ExcelJS = require('exceljs');
+
+const excelToJs = async (
   moduleName,
   sheetName,
   option = {}
 ) => {
-  const { writeFileSync: writer } = require('fs');
-
   const defaultOption = {
     // Excel文件名；
-    source: '../input/模块管理.xlsx',
+    source: '../../input/模块管理.xlsx',
     // 是否保存每行数据处理结果到文件
     resultFile: false,
     // 因为无key值而被忽略的行信息是否保存到文件
@@ -45,12 +46,12 @@ module.exports.i18nReader = async (
 
   const { keyColumnName, cnColumnName, twColumnName, enColumnName, resultColumnName } = opt;
 
-  const ExcelJS = require('exceljs');
   const workbook = new ExcelJS.Workbook();
   await workbook.xlsx.readFile(dataFile);
   const workSheet = workbook.getWorksheet(sheetName);
 
   const logger = str => console.log('\n' + str);
+
   const extractCellText = (cellValue) => {
     let value;
     try {
@@ -62,6 +63,7 @@ module.exports.i18nReader = async (
     }
     return value;
   };
+
   // 获取key、简体、繁体、英文列的id
   let keyId, cnId, twId, enId, resultId;
   const headerRow = workSheet.getRow(1);
@@ -120,7 +122,7 @@ module.exports.i18nReader = async (
   logger(`ignored rows(empty key) count: ${ignoredRows.length}`);
 
   if (ignoredRowsFile) {
-    writer(`../output/${moduleName}_rows_ignored.txt`, ignoredRows.join('\n') + '\n');
+    writer(`../../output/${moduleName}_rows_ignored.txt`, ignoredRows.join('\n') + '\n');
 
   }
 
@@ -165,13 +167,13 @@ module.exports.i18nReader = async (
     sameKeyDiffContentRows = sameKeyDiffContentRows.map(item => JSON.stringify(item));
     logger(`same key but different content rows count: ${sameKeyDiffContentRows.length}`)
     if (resultFile) {
-      writer(`../output/${moduleName}_result.txt`, resultStates.map(item => item.result).join('\n'));
+      writer(`../../output/${moduleName}_result.txt`, resultStates.map(item => item.result).join('\n'));
     }
     if (deleteRowsFile) {
-      writer(`../output/${moduleName}_rows_deleted.txt`, deleteRows.join('\n') + '\n');
+      writer(`../../output/${moduleName}_rows_deleted.txt`, deleteRows.join('\n') + '\n');
     }
     if (sameKeyDiffContentRowsFile) {
-      writer(`../output/${moduleName}_rows_same-diff.txt`, sameKeyDiffContentRows.join('\n') + '\n');
+      writer(`../../output/${moduleName}_rows_same-diff.txt`, sameKeyDiffContentRows.join('\n') + '\n');
     }
 
     return list;
@@ -220,11 +222,15 @@ module.exports.i18nReader = async (
   const twJS = jsonToJS(twJSON);
   const enJS = jsonToJS(enJSON);
 
-  writer(`../output/${moduleName}_cn.js`, cnJS);
-  writer(`../output/${moduleName}_tw.js`, twJS);
-  writer(`../output/${moduleName}_en.js`, enJS);
+  writer(`../../output/${moduleName}_cn.js`, cnJS);
+  writer(`../../output/${moduleName}_tw.js`, twJS);
+  writer(`../../output/${moduleName}_en.js`, enJS);
   logger(
     `I18n files of module "${moduleName}" have been created successfully.\r\n` +
     `Find them in the "output" directory.`
   );
 };
+
+module.exports = {
+  excelToJs
+}
