@@ -40,23 +40,20 @@ class VueComponent {
 
 class Replacement {
   constructor({ i18nKey, cnValue }) {
-    const value = cnValue.replace(/([\[\]{}.$*])/g, '\\$1');
+    this.replacedCount = 0;
+    const value = cnValue.replace(/([\[\]{}.$*/?"<>|`])/g, '\\$1');
     this.i18nKey = i18nKey;
-    this.reg = new RegExp(value, 'g').source;
-    this.templateReplacement = `$t('${i18nKey}')`;
+    this.templateAttrReg = new RegExp(`[A-Za-z0-9.-]+="(${value})(|:|：)"|['\`]${value}['\`]`, 'g');
+    this.templatePlainTextReg = new RegExp(`>[ \n]*(${value})<`, 'g');
+    this.jsReg = new RegExp(`['"\`]${value}(|\\?|!|\\.|？|！|。)['"\`]`, 'g');
+    this.templateAttrReplacement = `$t('${i18nKey}')`;
+    this.templatePlainTextReplacement = `{{ $t('${i18nKey}') }}`;
     this.scriptReplacement = `this.$t('${i18nKey}')`;
     this.jsReplacement = `i18n.tc('${i18nKey}')`;
   }
 }
 
-const keyToReplacement = (keyList = []) => {
-  const list = keyList.map(keyData => {
-    const r = new Replacement(keyData);
-    console.log(r);
-    return r;
-  });
-  return list;
-};
+const keyToReplacement = (keyList = []) => keyList.map(keyData => new Replacement(keyData));
 
 module.exports = {
   replaceComments,

@@ -4,10 +4,10 @@ const { VueComponent, keyToReplacement } = require('../tools/i18nAutoReplacement
 const { flatKeysList } = require('../tools/directoryReader');
 
 (async () => {
-  const cnDataPath = 'D:\\Projects\\UMC\\umc-web\\src\\lang\\zh.js';
+  const cnDataPath = 'D:\\Projects\\UMC\\umc-web\\src\\lang\\cm\\zh.js';
   const moduleLevel = [
     [],
-    ['common']
+    ['cm']
   ];
 
   // 需替换的文件所在文件夹
@@ -17,6 +17,9 @@ const { flatKeysList } = require('../tools/directoryReader');
 
   // 单次任务处理的文件数量
   const taskBlockSize = 10;
+
+
+  const i18nImport = `import { i18n } from '@/main'`;
 
   // 获取中文i18n文件，并转换格式
   const cnData = require(cnDataPath);
@@ -32,7 +35,6 @@ const { flatKeysList } = require('../tools/directoryReader');
     }
   );
   const files = extractFiles(directoryContent);
-  writer('../output/files.json', JSON.stringify(files, null, 2));
 
   // 开始
   const taskBlockQueue = [];
@@ -43,28 +45,81 @@ const { flatKeysList } = require('../tools/directoryReader');
     taskBlockQueue.push([...vueFiles.splice(0, taskBlockSize)]);
   }
   while(taskBlockQueue.length) {
-    const tasks = taskBlockQueue.shift();
+    const files = taskBlockQueue.shift();
     // 读文件
-    for(const task of tasks) {
-      const fileText = reader(task.filePath, 'utf8');
+    for(const file of files) {
+      const fileText = reader(file.filePath, 'utf8');
       const fileContent = new VueComponent(fileText);
-      task.fileContent = fileContent;
+      file.fileContent = fileContent;
     }
     // 替换中文
-    for(const task of tasks) {
+    for(const file of files) {
       for(const replacement of replacementList) {
-        const vueComponent = task.fileContent;
-        const { template, script } = vueComponent;
-        const { reg, templateReplacement, scriptReplacement } = replacement;
-        vueComponent.template = template.replace(reg, templateReplacement);
-        vueComponent.script = script.replace(reg, scriptReplacement);
+        const vueComponent = file.fileContent;
+        const {
+          template,
+          script
+        } = vueComponent;
+        const {
+          templateAttrReg,
+          templateAttrReplacement,
+          templatePlainTextReg,
+          templatePlainTextReplacement,
+          jsReg,
+          scriptReplacement
+        } = replacement;
+        vueComponent.template = template
+          .replace(
+            templateAttrReg,
+            function (match, cn, suffix) {
+              file.isModified = true;
+              replacement.replacedCount++;
+              if (cn) {
+                if (suffix) {
+                  return ':' + match.replace(suffix, '').replace(cn, templateAttrReplacement + ` + '${suffix}'`);
+                } else {
+                  return ':' + match.replace(cn, templateAttrReplacement);
+                }
+              }
+              return templateAttrReplacement;
+            }
+          )
+          .replace(
+            templatePlainTextReg,
+            function (match, cn) {
+              file.isModified = true;
+              replacement.replacedCount++;
+              return match.replace(cn, templatePlainTextReplacement);
+            }
+          );
+        vueComponent.script = script.replace(jsReg, function (match, suffix) {
+          file.isModified = true;
+          replacement.replacedCount++;
+
+          if (match.includes('确定删除该敏感词')) {
+            console.log(JSON.stringify(
+              [
+                arguments[0],
+                arguments[1],
+                arguments[2]
+              ]
+            ));
+          }
+          if (suffix) {
+            return scriptReplacement + ` + '${suffix}'`
+          }
+          return scriptReplacement;
+        });
       }
     }
     // 写文件
-    for(const task of tasks) {
-      const { template, script, style } = task.fileContent;
+    for(const file of files) {
+      if (!file.isModified) {
+        continue;
+      }
+      const { template, script, style } = file.fileContent;
       writer(
-        task.filePath,
+        file.filePath,
         template + script + style
       );
     }
@@ -76,27 +131,51 @@ const { flatKeysList } = require('../tools/directoryReader');
     taskBlockQueue.push([...jsFiles.splice(0, taskBlockSize)]);
   }
   while(taskBlockQueue.length) {
-    const tasks = taskBlockQueue.shift();
+    const files = taskBlockQueue.shift();
     // 读文件
-    for(const task of tasks) {
-      const fileText = reader(task.filePath, 'utf8');
-      task.fileContent = fileText + '\n';
+    for(const file of files) {
+      const fileText = reader(file.filePath, 'utf8');
+      file.fileContent = fileText + '\n';
     }
     // 替换中文
-    for(const task of tasks) {
+    for(const file of files) {
       for(const replacement of replacementList) {
-        const fileContent = task.fileContent;
-        const { reg, jsReplacement } = replacement;
-        task.fileContent = fileContent.replace(reg, jsReplacement);
+        const fileContent = file.fileContent;
+        const { jsReg, jsReplacement } = replacement;
+        file.fileContent = fileContent.replace(
+          jsReg,
+          function (match, suffix) {
+            file.isModified = true;
+            replacement.replacedCount++;
+          // console.log(JSON.stringify(
+          //   [
+          //     arguments[0],
+          //     arguments[1],
+          //     arguments[2]
+          //   ]
+          // ));
+          if (suffix) {
+            return jsReplacement + ` + '${suffix}'`
+          }
+          return jsReplacement;
+        });
       }
     }
     // 写文件
-    for(const task of tasks) {
+    for(const file of files) {
+      if (!file.isModified) {
+        continue;
+      }
+      let content = file.fileContent;
+      const hasI18nImport = content.includes('i18n');
+      content = hasI18nImport ? content :  i18nImport + '\n' + file.fileContent;
       writer(
-        task.filePath,
-        i18nImport + '\n' + task.fileContent
+        file.filePath,
+        content
       );
     }
   }
+
+  writer('../output/replacement.json', JSON.stringify(replacementList, null, 2));
 
 })();
