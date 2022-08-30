@@ -1,4 +1,6 @@
 (() => {
+  const { writeFileSync: writer } = require('fs');
+
   // 英文数据所在单元格；
   // 取哪一行的值生成的函数就适用在哪一行；
   const enCell = 'D3';
@@ -94,6 +96,5 @@
       `SUBSTITUTE(${ keyFromSentence }," ","")` +
     `)`;
 
-  const { writeFileSync } = require('fs');
-  writeFileSync('../output/keyFun.txt', keyFun);
+  writer('../output/keyFun.txt', keyFun);
 })();
