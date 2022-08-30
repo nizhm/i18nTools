@@ -1,6 +1,6 @@
 const { readdirSync } = require('fs');
 const path = require('path');
-const { direntTypeKeysMap } = require('../dir/dirent.js');
+const { direntTypeKeysMap } = require('../inspector/dirent.js');
 
 
 const excludeDirectoryDefault = ['node_modules'];
