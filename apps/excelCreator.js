@@ -10,11 +10,13 @@ const path = require('path');
 
 (async () => {
   const header = [
-    { header: '模块', width: 10 },
-    { header: '元素显示中文', width: 32 },
-    { header: '元素显示繁体', width: 32 },
-    { header: '元素显示英文', width: 32 },
-    { header: 'i18nKey', width: 20 }
+    { header: '模块', width: 20 },
+    { header: '元素显示中文', width: 45 },
+    { header: '元素显示繁体', width: 45 },
+    { header: '元素显示英文', width: 45 },
+    { header: '_key', width: 25 },
+    { header: 'key', width: 25 },
+    { header: 'i18nKey', width: 50 }
   ];
 
   const langPath = 'D:\\Projects\\UMC\\umc-web\\src\\lang';
@@ -79,20 +81,25 @@ const path = require('path');
   for(const item of langList) {
     const { i18nKey } = item;
     const splitor = '.';
-    let moduleName;
+    let moduleName, _key;
     if (i18nKey.includes(splitor)) {
-      moduleName = i18nKey.split(splitor)[0];
+      const [module, key] = i18nKey.split(splitor);
+      moduleName = module;
+      _key = key;
     } else {
-      moduleName = 'public';
+      moduleName = '';
+      _key = i18nKey;
     }
+
     item['moduleName'] = moduleName;
+    item['_key'] = _key;
     item['twValue'] = eval(`twData.${i18nKey}`);
     item['enValue'] = eval(`enData.${i18nKey}`);
   }
 
-  langList = langList.map(
-    ({ i18nKey, cnValue, twValue, enValue }) => [i18nKey, cnValue, twValue, enValue]
-  );
+  langList = langList.map(({ moduleName, cnValue, twValue, enValue, _key, i18nKey }) => {
+    return [moduleName, cnValue, twValue, enValue, _key, '', i18nKey];
+  });
 
   await listToExcel(
     header,
