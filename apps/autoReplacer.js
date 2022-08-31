@@ -20,7 +20,7 @@ const { flatKeysList } = require('../tools/directoryReader');
 
 (async () => {
   // 中文文件位置
-  const cnDataPath = 'D:\\Projects\\UMC\\umc-web\\src\\lang\\contact\\zh.js';
+  const cnDataPath = 'D:\\Projects\\UMC\\umc-web\\src\\lang\\cm\\zh.js';
   // zh.js的对象嵌套深度，每层深度只会读取value不是对象类型的key
   // 空数组表示取对象的第一层属性，即data
   // 单个元素数组表示取对象的某个模块的属性（第二层），即data.cm
@@ -28,7 +28,7 @@ const { flatKeysList } = require('../tools/directoryReader');
   // 以此类推第四层、第五层...
   const moduleLevel = [
     [],
-    ['contact']
+    ['cm']
   ];
 
   // 需替换的文件所在文件夹
@@ -95,6 +95,9 @@ const { flatKeysList } = require('../tools/directoryReader');
     for(const file of files) {
       currentFileCount++;
       logger(`current file:${file.fileName} (${currentFileCount}/${totalFileCount})`);
+      // if (file.fileName === 'supplier.vue') {
+      //   logger(JSON.stringify(file.fileContent.template));
+      // }
 
       for(const replacement of replacementList) {
         const vueComponent = file.fileContent;
@@ -149,9 +152,9 @@ const { flatKeysList } = require('../tools/directoryReader');
               //     ]
               //   ));
               // }
-              if (suffix) {
-                return scriptReplacement + ` + '${suffix}'`;
-              }
+              // if (suffix) {
+              //   return scriptReplacement + ` + '${suffix}'`;
+              // }
               return scriptReplacement;
             }
           );
@@ -204,9 +207,9 @@ const { flatKeysList } = require('../tools/directoryReader');
           //     arguments[2]
           //   ]
           // ));
-          if (suffix) {
-            return jsReplacement + ` + '${suffix}'`;
-          }
+          // if (suffix) {
+          //   return jsReplacement + ` + '${suffix}'`;
+          // }
           return jsReplacement;});
       }
     }
@@ -225,7 +228,7 @@ const { flatKeysList } = require('../tools/directoryReader');
     }
   }
 
-  writer('../output/replacement.json', JSON.stringify(replacementList, null, 2));
+  // writer('../output/replacement.json', JSON.stringify(replacementList, null, 2));
 
   logger(`##### End #####`);
 })();
