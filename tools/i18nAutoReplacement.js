@@ -38,6 +38,7 @@ class VueComponent {
   }
 }
 
+const endMarkReg = /[A-Za-z0-9 \u4e00-\u9fa5](\?|？|!|！)$/;
 class Replacement {
   constructor({ i18nKey, cnValue }) {
     this.i18nKey = i18nKey;
@@ -47,7 +48,7 @@ class Replacement {
     this.templateAttrReg = new RegExp(`[A-Za-z0-9.-]+="(${value})(|:|：)"|['\`]${value}['\`]`, 'g');
     this.templateAttrReplacement = `$t('${i18nKey}')`;
 
-    this.templatePlainTextReg = new RegExp(`>[ \n]*(${value})[ \n]*<`, 'g');
+    this.templatePlainTextReg = new RegExp(`>[ \n]*(${value})[ \n:：]*<`, 'g');
     this.templatePlainTextReplacement = `{{ $t('${i18nKey}') }}`;
 
     this.jsReg = new RegExp(`['"\`]${value}(|\\?|!|\\.|？|！|。)['"\`]`, 'g');

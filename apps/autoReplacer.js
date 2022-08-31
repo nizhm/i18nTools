@@ -2,16 +2,20 @@ const {
   directoryReader,
   extractFiles
 } = require('../tools/directoryReader.js');
+
 const {
   readFileSync: reader,
   writeFileSync: writer
 } = require('fs');
+
 const {
   VueComponent,
   keyToReplacement,
   filterVariableItem
 } = require('../tools/i18nAutoReplacement');
+
 const { logger } = require('../logger');
+
 const { flatKeysList } = require('../tools/directoryReader');
 
 (async () => {
@@ -146,7 +150,7 @@ const { flatKeysList } = require('../tools/directoryReader');
               //   ));
               // }
               if (suffix) {
-                return scriptReplacement + ` + '${suffix}'`
+                return scriptReplacement + ` + '${suffix}'`;
               }
               return scriptReplacement;
             }
@@ -201,8 +205,9 @@ const { flatKeysList } = require('../tools/directoryReader');
           //   ]
           // ));
           if (suffix) {
-            return jsReplacement + ` + '${suffix}'`
-          }return jsReplacement;});
+            return jsReplacement + ` + '${suffix}'`;
+          }
+          return jsReplacement;});
       }
     }
     // 写文件
