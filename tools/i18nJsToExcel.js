@@ -15,7 +15,7 @@ const listToExcel = async (
     sheetName
   } = opt;
 
-  const output = `../output/${fileName}.xlsx`;
+  const output = `../output/${fileName}_${Date.now()}.xlsx`;
   const workbook = new ExcelJS.Workbook();
   const sheet = workbook.addWorksheet(sheetName);
   sheet.columns = header;

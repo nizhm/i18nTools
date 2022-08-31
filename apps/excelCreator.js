@@ -6,7 +6,11 @@ const {
 
 const { listToExcel } = require('../tools/i18nJsToExcel');
 
+const { writeFileSync: writer } = require('fs');
+
 const path = require('path');
+
+const { logger } = require('../logger');
 
 (async () => {
   const header = [
@@ -14,9 +18,7 @@ const path = require('path');
     { header: '元素显示中文', width: 45 },
     { header: '元素显示繁体', width: 45 },
     { header: '元素显示英文', width: 45 },
-    { header: '_key', width: 25 },
-    { header: 'key', width: 25 },
-    { header: 'i18nKey', width: 50 }
+    { header: 'key', width: 25 }
   ];
 
   const langPath = 'D:\\Projects\\UMC\\umc-web\\src\\lang';
@@ -25,13 +27,12 @@ const path = require('path');
 
   const excludeDirectory = [
     'node_modules',
-    'elementLang',
-    'cm',
-    'auditManage',
-    'monitoringCenter',
-    'shortChain'
+    'elementLang'
   ];
   const includeFile = ['js'];
+
+  // 开始读文件
+  logger('#####  Start to Read lang Files #####');
   const langData = directoryReader(
     langPath,
     {
@@ -75,9 +76,15 @@ const path = require('path');
     ['statistics'],
     ['templateManage'],
     ['utplSend'],
-    ['utpltemplate']
+    ['utpltemplate'],
+    ['cm'],
+    ['auditManage'],
+    ['monitoringCenter'],
+    ['shortChain']
   ];
   let langList = flatKeysList(cnData, moduleLevel);
+  const twEmptyList = [];
+  const enEmptyList = [];
   for(const item of langList) {
     const { i18nKey } = item;
     const splitor = '.';
@@ -93,12 +100,34 @@ const path = require('path');
 
     item['moduleName'] = moduleName;
     item['_key'] = _key;
-    item['twValue'] = eval(`twData.${i18nKey}`);
-    item['enValue'] = eval(`enData.${i18nKey}`);
+    const twValue = eval(`twData.${i18nKey}`);
+    const enValue = eval(`enData.${i18nKey}`);
+    item['twValue'] = twValue;
+    item['enValue'] = enValue;
+
+    if (!twValue) {
+      twEmptyList.push({ ...item });
+    }
+    if (!enValue) {
+      enEmptyList.push({ ...item });
+    }
   }
 
-  langList = langList.map(({ moduleName, cnValue, twValue, enValue, _key, i18nKey }) => {
-    return [moduleName, cnValue, twValue, enValue, _key, '', i18nKey];
+  const twEmptyCount = twEmptyList.length;
+  const enEmptyCount = enEmptyList.length;
+  if (twEmptyCount) {
+    writer('../output/zhCHT_Empty.json', JSON.stringify(twEmptyList, null, 2));
+    logger(`There are ${twEmptyCount} keys absent in \`zhCHT\``);
+    logger(`Find \`zhCHT_Empty.json\` in the output directory`);
+  }
+  if (enEmptyList) {
+    writer('../output/en_Empty.json', JSON.stringify(enEmptyList, null, 2));
+    logger(`There are ${enEmptyCount} keys absent in \`en\``);
+    logger(`Find \`en_Empty.json\` in the output directory`);
+  }
+
+  langList = langList.map(({ moduleName, cnValue, twValue, enValue, _key }) => {
+    return [moduleName, cnValue, twValue, enValue, _key];
   });
 
   await listToExcel(
@@ -109,4 +138,6 @@ const path = require('path');
       sheetName: excelFileName
     }
   );
+  logger(`Excel file \`${excelFileName}_*.xlsx\` has been created in the \`output\` directory successfully!`);
+  logger('#####  Finish Read lang Files #####');
 })();
