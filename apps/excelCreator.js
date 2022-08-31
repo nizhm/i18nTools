@@ -1,16 +1,25 @@
-const path = require('path');
-const { writeFileSync: writer } = require('fs');
-
-const ExcelJS = require('exceljs');
-
 const {
   directoryReader,
   extractFiles,
   flatKeysList
-} = require('./directoryReader');
+} = require('../tools/directoryReader');
+
+const { listToExcel } = require('../tools/i18nJsToExcel');
+
+const path = require('path');
 
 (async () => {
+  const header = [
+    { header: '模块', width: 10 },
+    { header: '元素显示中文', width: 32 },
+    { header: '元素显示繁体', width: 32 },
+    { header: '元素显示英文', width: 32 },
+    { header: 'i18nKey', width: 20 }
+  ];
+
   const langPath = 'D:\\Projects\\UMC\\umc-web\\src\\lang';
+
+  const excelFileName = path.basename(langPath);
 
   const excludeDirectory = [
     'node_modules',
@@ -21,14 +30,14 @@ const {
     'shortChain'
   ];
   const includeFile = ['js'];
-  const langContent = directoryReader(
+  const langData = directoryReader(
     langPath,
     {
       excludeDirectory,
       includeFile
     }
   );
-  const files = extractFiles(langContent);
+  const files = extractFiles(langData);
   const jsFiles = files['js'];
   const transFiles = {};
   for(const jsFile of jsFiles) {
@@ -80,33 +89,17 @@ const {
     item['twValue'] = eval(`twData.${i18nKey}`);
     item['enValue'] = eval(`enData.${i18nKey}`);
   }
-  console.log(langList.length);
 
+  langList = langList.map(
+    ({ i18nKey, cnValue, twValue, enValue }) => [i18nKey, cnValue, twValue, enValue]
+  );
 
-  function jsonToJS(json) {
-    json = JSON.stringify(json, null, 2);
-    json = json
-      .replace(/"\S*":/g, key => key.replace(/"/g, ''))
-      .replace(/'/g, "\\'")
-      .replace(/&nbsp;/g, "")
-      .replace(/"/g, "'");
-    return `module.exports = ${json}\n`;
-  }
-
-  const xlsxFilePath = '../output/output.xlsx';
-  const workbook = new ExcelJS.Workbook();
-  const langSheet = workbook.addWorksheet('lang');
-  langSheet.columns = [
-    { header: 'Id', width: 10 },
-    { header: 'Name', width: 32 },
-    { header: 'D.O.B.', width: 10 }
-  ];
-  await workbook.xlsx.writeFile(xlsxFilePath);
-
-  for(const row of langList) {
-
-  }
-  writer(`../output/${path.basename(langPath)}_list.js`, jsonToJS(langList));
-  // writer(`../output/${path.basename(langPath)}_tw.js`, jsonToJS(twData));
-  // writer(`../output/${path.basename(langPath)}_en.js`, jsonToJS(enData));
+  await listToExcel(
+    header,
+    langList,
+    {
+      fileName: excelFileName,
+      sheetName: excelFileName
+    }
+  );
 })();
