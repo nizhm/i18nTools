@@ -58,11 +58,26 @@ class Replacement {
 
 const keyToReplacement = (keyList = []) => keyList.map(keyData => new Replacement(keyData));
 
-const logger = str => console.log('\n' + str);
+const filterVariableItem = (keyList = []) => {
+  const variableReg = /[^$]\{[A-Za-z0-9-_]+}/;
+  const list = [];
+  const variableItemList = [];
+
+  for(const keyListElement of keyList) {
+    if (variableReg.test(keyListElement.cnValue)) {
+      variableItemList.push(keyListElement);
+      continue;
+    }
+
+    list.push(keyListElement);
+  }
+
+  return [list, variableItemList];
+};
 
 module.exports = {
   replaceComments,
   VueComponent,
   keyToReplacement,
-  logger
+  filterVariableItem
 }

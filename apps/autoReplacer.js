@@ -1,11 +1,22 @@
-const { directoryReader, extractFiles } = require('../tools/directoryReader.js');
-const { readFileSync: reader, writeFileSync: writer } = require('fs');
-const { VueComponent, keyToReplacement, logger } = require('../tools/i18nAutoReplacement');
+const {
+  directoryReader,
+  extractFiles
+} = require('../tools/directoryReader.js');
+const {
+  readFileSync: reader,
+  writeFileSync: writer
+} = require('fs');
+const {
+  VueComponent,
+  keyToReplacement,
+  filterVariableItem
+} = require('../tools/i18nAutoReplacement');
+const { logger } = require('../logger');
 const { flatKeysList } = require('../tools/directoryReader');
 
 (async () => {
   // 中文文件位置
-  const cnDataPath = 'D:\\Projects\\UMC\\umc-web\\src\\lang\\cm\\zh.js';
+  const cnDataPath = 'D:\\Projects\\UMC\\umc-web\\src\\lang\\contact\\zh.js';
   // zh.js的对象嵌套深度，每层深度只会读取value不是对象类型的key
   // 空数组表示取对象的第一层属性，即data
   // 单个元素数组表示取对象的某个模块的属性（第二层），即data.cm
@@ -13,7 +24,7 @@ const { flatKeysList } = require('../tools/directoryReader');
   // 以此类推第四层、第五层...
   const moduleLevel = [
     [],
-    ['cm']
+    ['contact']
   ];
 
   // 需替换的文件所在文件夹
@@ -30,7 +41,19 @@ const { flatKeysList } = require('../tools/directoryReader');
   // 获取中文i18n文件，并转换格式
   const cnData = require(cnDataPath);
   const flatCnData = flatKeysList(cnData, moduleLevel);
-  const replacementList = keyToReplacement(flatCnData);
+  const filtered = filterVariableItem(flatCnData);
+  const noVariableList = filtered[0];
+  const variableList = filtered[1];
+  const replacementList = keyToReplacement(noVariableList);
+
+  logger(`##### Keys #####`);
+  logger(`Total key:${flatCnData.length}`);
+  logger(`No variable key:${noVariableList.length}`);
+  logger(`Variable key:${variableList.length}`);
+  if (variableList.length) {
+    writer('../output/variable.json', JSON.stringify(variableList, null, 2));
+    logger(`Find \`variable.json\` in the \`output\` directory and replace manually!`);
+  }
 
   // 读取目标文件夹中所有文件
   const directoryContent = directoryReader(
@@ -49,8 +72,8 @@ const { flatKeysList } = require('../tools/directoryReader');
   const totalFileCount = vueFiles.length + jsFiles.length;
   let currentFileCount = 0;
 
-  logger(`Total file:${totalFileCount}(${vueFiles.length} vue ${jsFiles.length} js)`);
   logger(`##### Start #####`);
+  logger(`Total file:${totalFileCount}(${vueFiles.length} vue ${jsFiles.length} js)`);
 
   // 处理vue文件
   while(vueFiles.length) {
@@ -107,23 +130,27 @@ const { flatKeysList } = require('../tools/directoryReader');
               return match.replace(cn, templatePlainTextReplacement);
             }
           );
-        vueComponent.script = script.replace(jsReg, function (match, suffix) {
-          file.isModified = true;
+        vueComponent.script = script
+          .replace(
+            jsReg,
+            function (match, suffix) {
+              file.isModified = true;
 
-          // if (match.includes('确定删除该敏感词')) {
-          //   console.log(JSON.stringify(
-          //     [
-          //       arguments[0],
-          //       arguments[1],
-          //       arguments[2]
-          //     ]
-          //   ));
-          // }
-          if (suffix) {
-            return scriptReplacement + ` + '${suffix}'`
-          }
-          return scriptReplacement;
-        });
+              // if (match.includes('确定删除该敏感词')) {
+              //   console.log(JSON.stringify(
+              //     [
+              //       arguments[0],
+              //       arguments[1],
+              //       arguments[2]
+              //     ]
+              //   ));
+              // }
+              if (suffix) {
+                return scriptReplacement + ` + '${suffix}'`
+              }
+              return scriptReplacement;
+            }
+          );
       }
     }
     // 写文件
@@ -157,7 +184,10 @@ const { flatKeysList } = require('../tools/directoryReader');
 
       for(const replacement of replacementList) {
         const fileContent = file.fileContent;
-        const { jsReg, jsReplacement } = replacement;
+        const {
+          jsReg,
+          jsReplacement
+        } = replacement;
         file.fileContent = fileContent.replace(
           jsReg,
           function (match, suffix) {
@@ -172,9 +202,7 @@ const { flatKeysList } = require('../tools/directoryReader');
           // ));
           if (suffix) {
             return jsReplacement + ` + '${suffix}'`
-          }
-          return jsReplacement;
-        });
+          }return jsReplacement;});
       }
     }
     // 写文件
