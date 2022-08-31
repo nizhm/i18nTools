@@ -1,15 +1,16 @@
 const { directoryReader, extractFiles } = require('../tools/directoryReader.js');
 const { readFileSync: reader, writeFileSync: writer } = require('fs');
-const { VueComponent, keyToReplacement } = require('../tools/i18nAutoReplacement');
+const { VueComponent, keyToReplacement, logger } = require('../tools/i18nAutoReplacement');
 const { flatKeysList } = require('../tools/directoryReader');
 
 (async () => {
   // 中文文件位置
   const cnDataPath = 'D:\\Projects\\UMC\\umc-web\\src\\lang\\cm\\zh.js';
   // zh.js的对象嵌套深度，每层深度只会读取value不是对象类型的key
-  // 空数组表示取对象的第一层属性
-  // 单个元素数组表示取对象的某个模块的属性（第二层）
-  // 如果要取第三层属性，另外再加两个元素的数组，比如['cm', 'security']，表示取cm.security
+  // 空数组表示取对象的第一层属性，即data
+  // 单个元素数组表示取对象的某个模块的属性（第二层），即data.cm
+  // 如果要取第三层属性，另外再加两个元素的数组，比如['cm', 'security']，表示取data.cm.security
+  // 以此类推第四层、第五层...
   const moduleLevel = [
     [],
     ['cm']
@@ -45,6 +46,11 @@ const { flatKeysList } = require('../tools/directoryReader');
   const taskBlockQueue = [];
   const vueFiles = files['vue'] || [];
   const jsFiles = files['js'] || [];
+  const totalFileCount = vueFiles.length + jsFiles.length;
+  let currentFileCount = 0;
+
+  logger(`Total file:${totalFileCount}(${vueFiles.length} vue ${jsFiles.length} js)`);
+  logger(`##### Start #####`);
 
   // 处理vue文件
   while(vueFiles.length) {
@@ -60,6 +66,9 @@ const { flatKeysList } = require('../tools/directoryReader');
     }
     // 替换中文
     for(const file of files) {
+      currentFileCount++;
+      logger(`current file:${file.fileName} (${currentFileCount}/${totalFileCount})`);
+
       for(const replacement of replacementList) {
         const vueComponent = file.fileContent;
         const {
@@ -79,7 +88,7 @@ const { flatKeysList } = require('../tools/directoryReader');
             templateAttrReg,
             function (match, cn, suffix) {
               file.isModified = true;
-              replacement.replacedCount++;
+
               if (cn) {
                 if (suffix) {
                   return ':' + match.replace(suffix, '').replace(cn, templateAttrReplacement + ` + '${suffix}'`);
@@ -94,23 +103,22 @@ const { flatKeysList } = require('../tools/directoryReader');
             templatePlainTextReg,
             function (match, cn) {
               file.isModified = true;
-              replacement.replacedCount++;
+
               return match.replace(cn, templatePlainTextReplacement);
             }
           );
         vueComponent.script = script.replace(jsReg, function (match, suffix) {
           file.isModified = true;
-          replacement.replacedCount++;
 
-          if (match.includes('确定删除该敏感词')) {
-            console.log(JSON.stringify(
-              [
-                arguments[0],
-                arguments[1],
-                arguments[2]
-              ]
-            ));
-          }
+          // if (match.includes('确定删除该敏感词')) {
+          //   console.log(JSON.stringify(
+          //     [
+          //       arguments[0],
+          //       arguments[1],
+          //       arguments[2]
+          //     ]
+          //   ));
+          // }
           if (suffix) {
             return scriptReplacement + ` + '${suffix}'`
           }
@@ -144,6 +152,9 @@ const { flatKeysList } = require('../tools/directoryReader');
     }
     // 替换中文
     for(const file of files) {
+      currentFileCount++;
+      logger(`current file:${file.fileName} (${currentFileCount}/${totalFileCount})`);
+
       for(const replacement of replacementList) {
         const fileContent = file.fileContent;
         const { jsReg, jsReplacement } = replacement;
@@ -151,7 +162,7 @@ const { flatKeysList } = require('../tools/directoryReader');
           jsReg,
           function (match, suffix) {
             file.isModified = true;
-            replacement.replacedCount++;
+
           // console.log(JSON.stringify(
           //   [
           //     arguments[0],
@@ -173,7 +184,7 @@ const { flatKeysList } = require('../tools/directoryReader');
       }
       let content = file.fileContent;
       const hasI18nImport = content.includes('i18n');
-      content = hasI18nImport ? content :  i18nImport + '\n' + file.fileContent;
+      content = hasI18nImport ? content :  i18nImport + '\n' + content;
       writer(
         file.filePath,
         content
@@ -183,4 +194,5 @@ const { flatKeysList } = require('../tools/directoryReader');
 
   writer('../output/replacement.json', JSON.stringify(replacementList, null, 2));
 
+  logger(`##### End #####`);
 })();
