@@ -18,6 +18,7 @@ const { logger } = require('../logger');
     { header: '元素显示中文', width: 45 },
     { header: '元素显示繁体', width: 45 },
     { header: '元素显示英文', width: 45 },
+    { header: '_key', width: 25 },
     { header: 'key', width: 25 }
   ];
 
@@ -77,10 +78,10 @@ const { logger } = require('../logger');
     ['templateManage'],
     ['utplSend'],
     ['utpltemplate'],
-    ['cm'],
-    ['auditManage'],
-    ['monitoringCenter'],
-    ['shortChain']
+    // ['cm'],
+    // ['auditManage'],
+    // ['monitoringCenter'],
+    // ['shortChain']
   ];
   let langList = flatKeysList(cnData, moduleLevel);
   const twEmptyList = [];
@@ -127,7 +128,7 @@ const { logger } = require('../logger');
   }
 
   langList = langList.map(({ moduleName, cnValue, twValue, enValue, _key }) => {
-    return [moduleName, cnValue, twValue, enValue, _key];
+    return [moduleName, cnValue, twValue, enValue, _key, _key];
   });
 
   await listToExcel(
