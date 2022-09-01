@@ -371,6 +371,7 @@ const allToJs = async (
   logger(`Total：${dataList.length}`);
   let moduleList = dataList.map(el => el.moduleName);
   moduleList = [...new Set(moduleList)];
+  logger(`module List: ${JSON.stringify(moduleList)}`);
   const moduleKeys = {};
   for(const moduleName of moduleList) {
     moduleKeys[moduleName] = dataList.filter(item => item.moduleName === moduleName);

@@ -65,8 +65,8 @@ const { logger } = require('../logger');
   }
 
   const moduleLevel = [
-    [],
-    ['common'],
+    // [],
+    // ['common'],
     ['aimEdit'],
     ['contact'],
     ['fgEdit'],
@@ -78,10 +78,10 @@ const { logger } = require('../logger');
     ['templateManage'],
     ['utplSend'],
     ['utpltemplate'],
-    // ['cm'],
-    // ['auditManage'],
-    // ['monitoringCenter'],
-    // ['shortChain']
+    ['cm'],
+    ['auditManage'],
+    ['monitoringCenter'],
+    ['shortChain']
   ];
   let langList = flatKeysList(cnData, moduleLevel);
   const twEmptyList = [];
