@@ -29,7 +29,7 @@ def getDictObj(t):
     return dictObj
 
 #Lang：获取Lang语言对象
-def getListObj(pre,obj):
+def getListObj(obj):
     list=[]
     for key,val in obj.items():
         item=getKeyVal(key,val)
@@ -37,6 +37,7 @@ def getListObj(pre,obj):
     # print("结果 list:",list)
     return list
 
+#Lang：获取Lang语言对象
 def getKeyVal(key,val):
     list=[]
     if type(val)==str:
@@ -49,13 +50,12 @@ def getKeyVal(key,val):
             list.extend(item)
         return list
 
-
 #Lang：获取Lang语言对象
 def getTempList(file_name):
     with io.open(file_name, "r", encoding="utf-8") as f: 
         t=f.read()
         dictObj=getDictObj(t)
-        list=getListObj("",dictObj) 
+        list=getListObj(dictObj) 
         # for objItem in list:
         #     print("zh：【"+objItem[1]+"】   key：【"+objItem[0]+"】")
         return list
@@ -118,7 +118,7 @@ def replace_Vue(obj,dir):
 
 #2.0
 def replace_VueText(str,look_up_table):
-    htmlStr=str[str.find('<template>'):str.find('</template>')]
+    htmlStr=str[str.find('<template>'):str.find('<script>')]
     htmlStrOld=htmlStr
 
     vueJsStr=str[str.find('<script>'):str.find('</script>')]
@@ -277,15 +277,22 @@ def replaceData(obj,dir):
 def replaceText():
     params=[
         #要替换的文件夹，语言文件（# 读取JS文件必须安装demjson）
-        ["D:\\UMCgit\\guojihua\\pyReplace\\tongxunlu","D:\\UMCgit\\guojihua\\umc-web\\src\\lang\\zh.js"],#公共
-        ["D:\\UMCgit\\guojihua\\pyReplace\\tongxunlu","D:\\UMCgit\\guojihua\\umc-web\\src\\lang\\contact\\zh.js"],#通讯录
-        # ["statistics","D:\\UMCgit\\guojihua\\pyReplace\\tongjifenxi","D:\\UMCgit\\guojihua\\umc-web\\src\\lang\\statistics\\zh.js"],#统计分析
+        # ["D:\\UMCgit\\guojihua\\pyReplace\\tongxunlu","D:\\UMCgit\\312\\umc-web\\src\\lang\\zh.js"],#公共
+        # ["D:\\UMCgit\\guojihua\\pyReplace\\tongxunlu","D:\\UMCgit\\312\\umc-web\\src\\lang\\contact\\zh.js"],#通讯录 
+         
+        # ["D:\\UMCgit\\312\\umc-web\\src\\views\\statistics\\form","D:\\UMCgit\\312\\umc-web\\src\\lang\\zh.js"],##公共
+        # ["D:\\UMCgit\\312\\umc-web\\src\\views\\statistics\\analysis","D:\\UMCgit\\312\\umc-web\\src\\lang\\zh.js"],#公共
+        ["D:\\UMCgit\\312\\umc-web\\src\\views\\fg\\statistics","D:\\UMCgit\\312\\umc-web\\src\\lang\\zh.js"],#公共
+
+        # ["D:\\UMCgit\\312\\umc-web\\src\\views\\statistics\\form","D:\\UMCgit\\312\\umc-web\\src\\lang\\statistics\\zh.js"],#统计分析
+        # ["D:\\UMCgit\\312\\umc-web\\src\\views\\statistics\\analysis","D:\\UMCgit\\312\\umc-web\\src\\lang\\statistics\\zh.js"],#统计分析
+        ["D:\\UMCgit\\312\\umc-web\\src\\views\\fg\\statistics","D:\\UMCgit\\312\\umc-web\\src\\lang\\statistics\\zh.js"],#统计分析
     ]
     for obj in params:
         moduleKey=getTempList(obj[1])
+        # print("moduleKey:",moduleKey)
         replaceData(moduleKey,obj[0]) # 替换 
         # replaceData(contcat,obj[0])#moduleKey也可直接使用列表,比如contcat
- 
 #程序入口
 if __name__ =="__main__": 
     replaceText()
