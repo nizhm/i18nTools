@@ -25,6 +25,9 @@ const createTagReg = tagName => new RegExp(`<${tagName}[^>]*>[\\s\\S]*<\\/${tagN
 const templateTagReg = createTagReg('template');
 const scriptTagReg = createTagReg('script');
 const styleTagReg = createTagReg('style');
+// const templateTagReg = /^<template[^>]*>[\s\S]*<\/template>[\r\n]*/;
+// const scriptTagReg = /<script[^>]*>[\s\S]*<\/script>/;
+// const styleTagReg = /[\r\n]*<style[^>]*>[\s\S]*$/;
 
 class VueComponent {
   constructor(fileText) {
