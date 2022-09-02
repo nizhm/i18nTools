@@ -23,15 +23,16 @@ const path = require('path');
   // lang文件位置
   const langDataList = [
     'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\zh.js',
+    'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\fgEdit\\zh.js',
 
     'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\aimEdit\\zh.js',
     'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\contact\\zh.js',
-    'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\fgEdit\\zh.js',
+    // 'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\fgEdit\\zh.js',
     'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\fgTemplate\\zh.js',
     'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\headerIcon\\zh.js',
     'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\loginPage\\zh.js',
     'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\rmsEdit\\zh.js',
-    // 'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\statistics\\zh.js',
+    'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\statistics\\zh.js',
     'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\templateManage\\zh.js',
     'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\utplSend\\zh.js',
     'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\utpltemplate\\zh.js'
@@ -43,7 +44,7 @@ const path = require('path');
   ];
 
   // 需替换的文件所在文件夹
-  const directoryPath = 'D:\\Projects\\UMC\\dev\\umc-web\\src\\views\\sendManage';
+  const directoryPath = 'D:\\Projects\\UMC\\dev\\umc-web\\src\\views\\cm\\unityCommunicationSet\\component';
   const excludeDirectory = ['node_modules', 'backend-emp', 'frontend-emp', 'security-emp'];
   const excludeFile = ['ChannelNumItem-emp.vue'];
   const includeExt = ['vue', 'js'];
@@ -121,23 +122,24 @@ const path = require('path');
       try {
         fileText = reader(file.filePath, 'utf8');
       } catch (e) {
-        logger(`Error while finding file \`${file.filePath}\``);
+        logger(`Error while finding File \`${file.filePath}\``);
         console.trace(e);
         continue;
       }
-      const fileContent = new VueComponent(fileText);
-      file.fileContent = fileContent;
+      file.fileContent = fileText;
     }
     // 替换中文
     for(const file of files) {
       currentFileCount++;
       logger(`current file:${file.fileName} (${currentFileCount}/${totalFileCount})`);
 
-      const vueComponent = file.fileContent;
-      const {
-        template,
-        script
-      } = vueComponent;
+      const fileContent = file.fileContent;
+      const templateStartIndex = fileContent.search(/<template[^>]*>/);
+      const scriptStartIndex = fileContent.search(/<script>/);
+      const exportStartIndex = fileContent.search(/export default/);
+      let styleStartIndex = fileContent.search(/<style[^>]*>/);
+      styleStartIndex = styleStartIndex === -1 ? fileContent.length : styleStartIndex;
+      console.log(templateStartIndex, scriptStartIndex, exportStartIndex, styleStartIndex)
 
       for(const replacement of replacementList) {
         const {
@@ -150,10 +152,19 @@ const path = require('path');
           jsReplacement
         } = replacement;
 
-        vueComponent.template = template
+        file.fileContent = fileContent
           .replace(
+            // new RegExp(`[A-Za-z0-9.-]+="(${value})(|:|：)"|['\`]${value}['\`]`, 'g')
             templateAttrReg,
-            function (match, cn, suffix) {
+            function (match, cn, suffix, offset) {
+              // Range: <template .... </template>
+              // if (
+              //   !(offset < scriptStartIndex &&
+              //   offset > templateStartIndex)
+              // ) {
+              //   return match;
+              // }
+
               file.isModified = true;
               if (cn) {
                 if (suffix) {
@@ -162,31 +173,65 @@ const path = require('path');
                   return ':' + match.replace(cn, templateAttrReplacement);
                 }
               }
-              return templateAttrReplacement;
+              console.log('templateAttrReg')
+              console.log(offset, match, cn)
+              return 'templateAttrReplacement';
             }
           )
           .replace(
+            // new RegExp(`>[ \r\n]*(${value})[ \r\n:：]*<`, 'g')
             templatePlainTextReg,
-            function (match, cn) {
+            function (match, cn, offset) {
+              // Range: <template .... </template>
+              if (
+                offset > scriptStartIndex ||
+                offset > styleStartIndex ||
+                offset < templateStartIndex
+              ) {
+                return match;
+              }
+
               file.isModified = true;
               return match.replace(cn, templatePlainTextReplacement);
             }
-          );
-        vueComponent.script = script
+          )
           .replace(
+            // new RegExp(`['"\`]${value}['"\`]`, 'g');
             jsReg,
             function (match, offset, input) {
-              file.isModified = true;
-              const beforeExport = offset < input.search('export default');
-              if (beforeExport) {
-                if (input.search('i18n') === -1) {
-                  file.needI18nImport = true
-                }
-                return jsReplacement;
+              // Range: <script> .... export default
+              if (
+                offset > exportStartIndex ||
+                offset > styleStartIndex ||
+                offset < scriptStartIndex
+              ) {
+                return match;
               }
+
+              file.isModified = true;
+              if (input.search('i18n') === -1) {
+                file.needI18nImport = true;
+              }
+              return jsReplacement;
+            }
+          )
+          .replace(
+            // new RegExp(`['"\`]${value}['"\`]`, 'g');
+            jsReg,
+            function (match, offset) {
+              // Range: export default .... </script>
+              if (
+                offset > styleStartIndex ||
+                offset < exportStartIndex
+              ) {
+                return match;
+              }
+
+              file.isModified = true;
               return scriptReplacement;
             }
           );
+
       }
     }
     // 写文件
@@ -194,13 +239,14 @@ const path = require('path');
       if (!file.isModified) {
         continue;
       }
-      let { template, script, style } = file.fileContent;
+      let fileContent = file.fileContent;
       if (file.needI18nImport) {
-        script = script.replace(/(<script[^>]*>)/, `$1\r\n${i18nImport}`);
+        fileContent = fileContent.replace(/(<script>)/, `$1\r\n${i18nImport}`);
       }
+      console.log(fileContent)
       writer(
         file.filePath,
-        template + script + style
+        fileContent
       );
     }
   }
@@ -217,7 +263,7 @@ const path = require('path');
       try {
         fileText = reader(file.filePath, 'utf8');
       } catch (e) {
-        logger(`Error while finding \`${path.basename(file.filePath)}\` in directory \`${file.filePath}\``);
+        logger(`Error while finding file \`${file.filePath}\``);
         console.trace(e);
         continue;
       }
@@ -229,23 +275,64 @@ const path = require('path');
       logger(`current file:${file.fileName} (${currentFileCount}/${totalFileCount})`);
 
       const fileContent = file.fileContent;
+      const exportStartIndex = fileContent.search(/export default/);
+
       for(const replacement of replacementList) {
         const {
           jsReg,
-          jsReplacement
+          jsReplacement,
+          scriptReplacement
         } = replacement;
 
-        file.fileContent = fileContent
-          .replace(
-            jsReg,
-            function (match, offset, input) {
-              file.isModified = true;
-              if (input.search('i18n') === -1) {
-                file.needI18nImport = true;
+        if (exportStartIndex !== -1) {
+          // this file is part of vue component
+          file.fileContent = fileContent
+            .replace(
+              // new RegExp(`['"\`]${value}['"\`]`, 'g');
+              jsReg,
+              function (match, offset, input) {
+                // Range: ^...... export default
+                if (offset > exportStartIndex) {
+                  return match;
+                }
+
+                file.isModified = true;
+                if (input.search('i18n') === -1) {
+                  file.needI18nImport = true;
+                }
+                return jsReplacement;
               }
-              return jsReplacement;
-            }
-          );
+            )
+            .replace(
+              // new RegExp(`['"\`]${value}['"\`]`, 'g');
+              jsReg,
+              function (match, offset, input) {
+                // Range: export default ...... $
+                // if (offset < exportStartIndex) {
+                //   return match;
+                // }
+
+                file.isModified = true;
+                return scriptReplacement;
+              }
+            );
+        } else {
+          // ordinary js file
+          file.fileContent = fileContent
+            .replace(
+              // new RegExp(`['"\`]${value}['"\`]`, 'g');
+              jsReg,
+              function (match, offset, input) {
+                // Range: ^...... $
+
+                file.isModified = true;
+                if (input.search('i18n') === -1) {
+                  file.needI18nImport = true;
+                }
+                return jsReplacement;
+              }
+            );
+        }
       }
     }
     // 写文件
@@ -253,13 +340,13 @@ const path = require('path');
       if (!file.isModified) {
         continue;
       }
-      let content = file.fileContent;
+      let fileContent = file.fileContent;
       if (file.needI18nImport) {
-        content = i18nImport + '\r\n' + content;
+        fileContent = `${i18nImport}\r\n${fileContent}`
       }
       writer(
         file.filePath,
-        content
+        fileContent
       );
     }
   }
