@@ -13,6 +13,7 @@ const { logger } = require('../logger');
 const path = require('path');
 
 const { replaceComments } = require('../tools/i18nAutoReplacement');
+const { flatKeysList } = require('../tools/directoryReader');
 
 (async () => {
   // 检索中文的文件夹
@@ -90,8 +91,76 @@ const { replaceComments } = require('../tools/i18nAutoReplacement');
   }
 
   chineseList = [...new Set(chineseList)];
+
+  const langPath = 'D:\\Projects\\UMC\\umc-web\\src\\lang';
+
+  // 开始读文件
+  const langData = directoryReader(
+    langPath,
+    {
+      excludeDirectory: [
+        'node_modules',
+        'elementLang'
+      ],
+      includeExt: ['js']
+    }
+  );
+  const langFile = extractFiles(langData);
+  const langFileList = langFile['js'];
+  const transFiles = {};
+  for(const jsFile of langFileList) {
+    const { fileName, filePath, directoryName } = jsFile;
+    if (!transFiles[directoryName]) {
+      transFiles[directoryName] = {};
+    }
+    transFiles[directoryName][fileName] = filePath;
+  }
+
+  const cnData = {};
+  for(const [, files] of Object.entries(transFiles)) {
+    const cn = require(files['zh.js']);
+    Object.assign(cnData, cn);
+  }
+
+  const moduleLevel = [
+    [],
+    // ['common'],
+    ['aimEdit'],
+    ['contact'],
+    ['fgEdit'],
+    ['fgTemplate'],
+    ['headerIcon'],
+    ['loginPage'],
+    ['rmsEdit'],
+    ['statistics'],
+    ['templateManage'],
+    ['utplSend'],
+    ['utpltemplate'],
+    // ['cm'],
+    // ['auditManage'],
+    // ['monitoringCenter'],
+    // ['shortChain']
+  ];
+  const langList = flatKeysList(cnData, moduleLevel);
+  const notHanZiReg = /[^\u4e00-\u9fa5]/g;
+  const cnList = langList.map(el => el.cnValue.replace(notHanZiReg, ''));
+
+  const chineseInfo = {
+    existKey: [],
+    noDirectKey: []
+  };
+  for(const chinese of chineseList) {
+    const cn = chinese.replace(notHanZiReg, '');
+    if (cnList.includes(cn)) {
+      chineseInfo.existKey.push(chinese);
+      continue;
+    }
+
+    chineseInfo.noDirectKey.push(chinese);
+  }
+
   logger(`Total found chinese:${chineseList.length}`);
-  writer('../output/chinese.json', JSON.stringify(chineseList, null, 2));
+  writer('../output/chinese.json', JSON.stringify(chineseInfo, null, 2));
   logger(`Find \`chinese.json\` in \`output\``);
   logger(`##### Finish chinese inspector #####`);
 })();
