@@ -16,28 +16,23 @@ const {
 
 const { logger } = require('../logger');
 
-const { flatKeysList } = require('../tools/directoryReader');
+const { flatAllKeys } = require('../tools/directoryReader');
 const path = require('path');
 
 (async () => {
-  // 中文文件位置
-  const cnDataPath = 'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\zh.js';
-  // zh.js的对象嵌套深度，每层深度只会读取value不是对象类型的key
-  // 空数组表示取对象的第一层属性，即data
-  // 单个元素数组表示取对象的某个模块的属性（第二层），即data.cm
-  // 如果要取第三层属性，另外再加两个元素的数组，比如['cm', 'security']，表示取data.cm.security
-  // 以此类推第四层、第五层...
-  const moduleLevel = [
-    [],
-    // ['cm']
+  // lang文件位置
+  const langDataList = [
+    'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\zh.js',
+    'D:\\Projects\\UMC\\umc-web\\src\\lang\\fgTemplate\\zh.js'
   ];
 
   // 需替换的文件所在文件夹
-  const directoryPath = 'D:\\Projects\\UMC\\dev\\umc-web\\src\\views\\cm';
+  const directoryPath = 'D:\\Projects\\UMC\\dev\\umc-web\\src\\views\\fg\\template';
   const excludeDirectory = ['node_modules', 'backend-emp', 'frontend-emp', 'security-emp'];
   const excludeFile = ['ChannelNumItem-emp.vue'];
   const includeExt = ['vue'];
 
+  // 额外的文件
   const additionalFileList = [
     'D:\\Projects\\UMC\\dev\\umc-web\\src\\components\\Collapse.vue',
     'D:\\Projects\\UMC\\dev\\umc-web\\src\\components\\PageLimitsItem.vue'
@@ -50,8 +45,13 @@ const path = require('path');
   const i18nImport = `import { i18n } from '@/main'`;
 
   // 获取中文i18n文件，并转换格式
-  const cnData = require(cnDataPath);
-  const flatCnData = flatKeysList(cnData, moduleLevel);
+  const flatCnData = [];
+  for(const langPath of langDataList) {
+    let data = require(langPath);
+    data = flatAllKeys(data);
+    flatCnData.push(...data);
+  }
+  // writer('../output/cnData.json', JSON.stringify(flatCnData, null, 2));
   const filtered = filterVariableItem(flatCnData);
   const noVariableList = filtered[0];
   const variableList = filtered[1];

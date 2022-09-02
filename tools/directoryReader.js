@@ -182,9 +182,24 @@ const flatKeysList = (keysData, targetLevel) => {
   return list;
 };
 
+const flatAllKeys = (keysData, container = [], keyPrefix = '') => {
+  for(const [key, value] of Object.entries(keysData)) {
+    if (typeof value === 'string') {
+      container.push({
+        i18nKey: keyPrefix + key,
+        cnValue: value
+      });
+    } else {
+      flatAllKeys(value, container, keyPrefix + key + '.');
+    }
+  }
+  return container
+};
+
 module.exports = {
   directoryReader,
   extractFiles,
   resolvePath,
-  flatKeysList
+  flatKeysList,
+  flatAllKeys
 }
