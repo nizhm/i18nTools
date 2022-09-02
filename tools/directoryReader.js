@@ -128,9 +128,29 @@ const extractFilePath = (directory, container) => {
   }
 };
 
-const extractFiles = (directory) => {
+const extractFileList = (additionalFileList, container) => {
+  for(const additionalFileListElement of additionalFileList) {
+    const filePath = additionalFileListElement;
+    const fileName = path.basename(filePath);
+    const directoryName = path.basename(path.dirname(filePath));
+    const ext = getExt(filePath);
+    if (!container[ext]) {
+      container[ext] = [];
+    }
+    container[ext].push({
+      fileName: fileName,
+      filePath,
+      directoryName
+    });
+  }
+};
+
+const extractFiles = (directory, additionalFileList = []) => {
   const fileList = {};
   extractFilePath(directory, fileList);
+  if (additionalFileList.length) {
+    extractFileList(additionalFileList, fileList);
+  }
   return fileList;
 };
 

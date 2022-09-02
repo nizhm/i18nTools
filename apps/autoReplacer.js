@@ -17,6 +17,7 @@ const {
 const { logger } = require('../logger');
 
 const { flatKeysList } = require('../tools/directoryReader');
+const path = require('path');
 
 (async () => {
   // 中文文件位置
@@ -37,6 +38,11 @@ const { flatKeysList } = require('../tools/directoryReader');
   const excludeFile = ['ChannelNumItem-emp.vue'];
   const includeExt = ['vue'];
 
+  const additionalFileList = [
+    'D:\\Projects\\UMC\\dev\\umc-web\\src\\components\\Collapse.vue',
+    'D:\\Projects\\UMC\\dev\\umc-web\\src\\components\\PageLimitsItem.vue'
+  ];
+
   // 单次任务处理的文件数量
   const taskBlockSize = 10;
 
@@ -51,6 +57,7 @@ const { flatKeysList } = require('../tools/directoryReader');
   const variableList = filtered[1];
   const replacementList = keyToReplacement(noVariableList);
 
+  logger(`##### Start auto replace #####`);
   logger(`##### Keys #####`);
   logger(`Total key:${flatCnData.length}`);
   logger(`No variable key:${noVariableList.length}`);
@@ -69,7 +76,9 @@ const { flatKeysList } = require('../tools/directoryReader');
       includeExt
     }
   );
-  const files = extractFiles(directoryContent);
+  const files = extractFiles(directoryContent, additionalFileList);
+
+  writer('../output/files.json', JSON.stringify(files, null, 2));
 
   // 开始
   const taskBlockQueue = [];
@@ -89,7 +98,13 @@ const { flatKeysList } = require('../tools/directoryReader');
     const files = taskBlockQueue.shift();
     // 读文件
     for(const file of files) {
-      const fileText = reader(file.filePath, 'utf8');
+      let fileText;
+      try {
+        fileText = reader(file.filePath, 'utf8');
+      } catch (e) {
+        logger(`Can not find File \`${path.basename(file.filePath)}\` in directory \`${file.filePath}\``);
+        console.trace(e);
+      }
       const fileContent = new VueComponent(fileText);
       file.fileContent = fileContent;
     }
@@ -183,7 +198,13 @@ const { flatKeysList } = require('../tools/directoryReader');
     const files = taskBlockQueue.shift();
     // 读文件
     for(const file of files) {
-      const fileText = reader(file.filePath, 'utf8');
+      let fileText;
+      try {
+        fileText = reader(file.filePath, 'utf8');
+      } catch (e) {
+        logger(`Can not find File \`${path.basename(file.filePath)}\` in directory \`${file.filePath}\``);
+        console.trace(e);
+      }
       file.fileContent = fileText + '\n';
     }
     // 替换中文
@@ -232,5 +253,5 @@ const { flatKeysList } = require('../tools/directoryReader');
 
   // writer('../output/replacement.json', JSON.stringify(replacementList, null, 2));
 
-  logger(`##### End #####`);
+  logger(`##### Finish auto replace #####`);
 })();
