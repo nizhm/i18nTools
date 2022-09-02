@@ -23,6 +23,7 @@ const path = require('path');
   // lang文件位置
   const langDataList = [
     'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\zh.js',
+    'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\fgEdit\\zh.js',
     'D:\\Projects\\UMC\\umc-web\\src\\lang\\fgTemplate\\zh.js'
   ];
 
@@ -34,8 +35,8 @@ const path = require('path');
 
   // 额外的文件
   const additionalFileList = [
-    'D:\\Projects\\UMC\\dev\\umc-web\\src\\components\\Collapse.vue',
-    'D:\\Projects\\UMC\\dev\\umc-web\\src\\components\\PageLimitsItem.vue'
+    // 'D:\\Projects\\UMC\\dev\\umc-web\\src\\components\\Collapse.vue',
+    // 'D:\\Projects\\UMC\\dev\\umc-web\\src\\components\\PageLimitsItem.vue'
   ];
 
   // 单次任务处理的文件数量
