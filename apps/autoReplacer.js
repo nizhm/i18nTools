@@ -104,6 +104,7 @@ const path = require('path');
       } catch (e) {
         logger(`Can not find File \`${path.basename(file.filePath)}\` in directory \`${file.filePath}\``);
         console.trace(e);
+        continue;
       }
       const fileContent = new VueComponent(fileText);
       file.fileContent = fileContent;
@@ -204,6 +205,7 @@ const path = require('path');
       } catch (e) {
         logger(`Can not find File \`${path.basename(file.filePath)}\` in directory \`${file.filePath}\``);
         console.trace(e);
+        continue;
       }
       file.fileContent = fileText + '\n';
     }
