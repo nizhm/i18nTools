@@ -78,7 +78,7 @@ const path = require('path');
   );
   const files = extractFiles(directoryContent, additionalFileList);
 
-  writer('../output/files.json', JSON.stringify(files, null, 2));
+  // writer('../output/files.json', JSON.stringify(files, null, 2));
 
   // 开始
   const taskBlockQueue = [];
