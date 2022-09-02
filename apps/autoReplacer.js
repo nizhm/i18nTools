@@ -20,7 +20,7 @@ const { flatKeysList } = require('../tools/directoryReader');
 
 (async () => {
   // 中文文件位置
-  const cnDataPath = 'D:\\Projects\\UMC\\umc-web\\src\\lang\\cm\\zh.js';
+  const cnDataPath = 'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\zh.js';
   // zh.js的对象嵌套深度，每层深度只会读取value不是对象类型的key
   // 空数组表示取对象的第一层属性，即data
   // 单个元素数组表示取对象的某个模块的属性（第二层），即data.cm
@@ -28,13 +28,14 @@ const { flatKeysList } = require('../tools/directoryReader');
   // 以此类推第四层、第五层...
   const moduleLevel = [
     [],
-    ['cm']
+    // ['cm']
   ];
 
   // 需替换的文件所在文件夹
-  const directoryPath = 'D:\\Projects\\UMC\\umc-web\\src\\views\\cm';
+  const directoryPath = 'D:\\Projects\\UMC\\dev\\umc-web\\src\\views\\cm';
   const excludeDirectory = ['node_modules', 'backend-emp', 'frontend-emp', 'security-emp'];
-  const includeFile = ['vue'];
+  const excludeFile = ['ChannelNumItem-emp.vue'];
+  const includeExt = ['vue'];
 
   // 单次任务处理的文件数量
   const taskBlockSize = 10;
@@ -64,7 +65,8 @@ const { flatKeysList } = require('../tools/directoryReader');
     directoryPath,
     {
       excludeDirectory,
-      includeFile
+      excludeFile,
+      includeExt
     }
   );
   const files = extractFiles(directoryContent);

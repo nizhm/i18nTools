@@ -20,12 +20,12 @@ const {
     'monitoringCenter',
     'shortChain'
   ];
-  const includeFile = ['js'];
+  const includeExt = ['js'];
   const langContent = directoryReader(
     langPath,
     {
       excludeDirectory,
-      includeFile
+      includeExt
     }
   );
   const files = extractFiles(langContent);

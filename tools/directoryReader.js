@@ -3,10 +3,11 @@ const path = require('path');
 const { direntTypeKeysMap } = require('./dirent.js');
 
 
-const excludeDirectoryDefault = ['node_modules'];
-const includeFileDefault = ['js'];
+const excludeDirectoryDefault = [];
+const includeExtDefault = [];
 const excludeDirectory = [];
-const includeFile = [];
+const excludeFile = [];
+const includeExt = [];
 
 class Directory {
   constructor(directoryName, directoryPath) {
@@ -41,7 +42,14 @@ const directoryContentReader = (directory) => {
 
     if (
       direntTypeKey === direntTypeKeysMap.get(1) &&
-      !includeFile.includes(getExt(item.name))
+      !includeExt.includes(getExt(item.name))
+    ) {
+      continue;
+    }
+
+    if (
+      direntTypeKey === direntTypeKeysMap.get(1) &&
+      excludeFile.includes(item.name)
     ) {
       continue;
     }
@@ -72,16 +80,21 @@ const directoryContentReader = (directory) => {
 
 const directoryReader = (directoryPath, options) => {
   excludeDirectory.length = 0;
-  includeFile.length = 0;
+  includeExt.length = 0;
+  excludeFile.length = 0;
   const excludeDir = options.excludeDirectory || [];
-  const includeFe = options.includeFile || [];
+  const excludeFs = options.excludeFile || []
+  const includeFs = options.includeExt || [];
   excludeDirectory.push(...[...new Set([
     ...excludeDirectoryDefault,
     ...excludeDir
   ])]);
-  includeFile.push(...[...new Set([
-    ...includeFileDefault,
-    ...includeFe
+  excludeFile.push(...[...new Set([
+    ...excludeFs
+  ])])
+  includeExt.push(...[...new Set([
+    ...includeExtDefault,
+    ...includeFs
   ])]);
 
   const directoryName = path.basename(directoryPath);

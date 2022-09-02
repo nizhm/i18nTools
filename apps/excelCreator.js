@@ -30,7 +30,7 @@ const { logger } = require('../logger');
     'node_modules',
     'elementLang'
   ];
-  const includeFile = ['js'];
+  const includeExt = ['js'];
 
   // 开始读文件
   logger('#####  Start to Read lang Files #####');
@@ -38,7 +38,7 @@ const { logger } = require('../logger');
     langPath,
     {
       excludeDirectory,
-      includeFile
+      includeExt
     }
   );
   const files = extractFiles(langData);
