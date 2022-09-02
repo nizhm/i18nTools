@@ -84,7 +84,7 @@ const { flatKeysList } = require('../tools/directoryReader');
       if (excludeComments) {
         fileText = replaceComments(fileText);
       }
-      const chineseReg = /[\u4e00-\u9fa5，（）。？！、；：]+/g;
+      const chineseReg = /[\u4e00-\u9fa5，；。：]+/g;
       let matches = fileText.match(chineseReg) || [];
       chineseList.push(...matches);
     }
@@ -156,7 +156,7 @@ const { flatKeysList } = require('../tools/directoryReader');
   for(const chinese of chineseList) {
     const cn = chinese.replace(notHanZiReg, '');
     const item = cnList.find(el => el.text === cn);
-    if (item) {
+    if (item && item.text) {
       chineseInfo.existKey.push(item);
       continue;
     }

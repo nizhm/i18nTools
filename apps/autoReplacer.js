@@ -23,8 +23,17 @@ const path = require('path');
   // lang文件位置
   const langDataList = [
     'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\zh.js',
+    'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\aimEdit\\zh.js',
+    // 'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\contact\\zh.js',
     'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\fgEdit\\zh.js',
-    'D:\\Projects\\UMC\\umc-web\\src\\lang\\fgTemplate\\zh.js'
+    'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\fgTemplate\\zh.js',
+    // 'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\headerIcon\\zh.js',
+    // 'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\loginPage\\zh.js',
+    'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\rmsEdit\\zh.js',
+    // 'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\statistics\\zh.js',
+    // 'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\templateManage\\zh.js',
+    // 'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\utplSend\\zh.js',
+    // 'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\utpltemplate\\zh.js'
   ];
   const additionalKeyList = [
     { i18nKey: 'cmcc', cnValue: '中国移动' },
