@@ -143,7 +143,11 @@ const { flatKeysList } = require('../tools/directoryReader');
   ];
   const langList = flatKeysList(cnData, moduleLevel);
   const notHanZiReg = /[^\u4e00-\u9fa5]/g;
-  const cnList = langList.map(el => el.cnValue.replace(notHanZiReg, ''));
+  const cnList = langList.map(el => {
+    const text = el.cnValue.replace(notHanZiReg, '');
+    el.text = text;
+    return el;
+  });
 
   const chineseInfo = {
     existKey: [],
@@ -151,8 +155,9 @@ const { flatKeysList } = require('../tools/directoryReader');
   };
   for(const chinese of chineseList) {
     const cn = chinese.replace(notHanZiReg, '');
-    if (cnList.includes(cn)) {
-      chineseInfo.existKey.push(chinese);
+    const item = cnList.find(el => el.text === cn);
+    if (item) {
+      chineseInfo.existKey.push(item);
       continue;
     }
 
