@@ -26,6 +26,11 @@ const path = require('path');
     'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\fgEdit\\zh.js',
     'D:\\Projects\\UMC\\umc-web\\src\\lang\\fgTemplate\\zh.js'
   ];
+  const additionalKeyList = [
+    { i18nKey: 'cmcc', cnValue: '中国移动' },
+    { i18nKey: 'cucc', cnValue: '中国联通' },
+    { i18nKey: 'ctcc', cnValue: '中国电信' }
+  ];
 
   // 需替换的文件所在文件夹
   const directoryPath = 'D:\\Projects\\UMC\\dev\\umc-web\\src\\views\\fg\\template';
@@ -53,6 +58,9 @@ const path = require('path');
     flatCnData.push(...data);
   }
   // writer('../output/cnData.json', JSON.stringify(flatCnData, null, 2));
+  if (additionalKeyList.length) {
+    flatCnData.push(...additionalKeyList);
+  }
   const filtered = filterVariableItem(flatCnData);
   const noVariableList = filtered[0];
   const variableList = filtered[1];
