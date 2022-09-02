@@ -87,7 +87,7 @@ const path = require('path');
   const totalFileCount = vueFiles.length + jsFiles.length;
   let currentFileCount = 0;
 
-  logger(`##### Start #####`);
+  logger(`##### Tasks #####`);
   logger(`Total file:${totalFileCount}(${vueFiles.length} vue ${jsFiles.length} js)`);
 
   // 处理vue文件
