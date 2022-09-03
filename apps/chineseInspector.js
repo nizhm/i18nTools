@@ -3,6 +3,8 @@ const {
   extractFiles
 } = require('../tools/directoryReader.js');
 
+const { autoReplacer, chineseInspector } = require('./config');
+
 const {
   readFileSync: reader,
   writeFileSync: writer
@@ -16,23 +18,19 @@ const { replaceComments } = require('../tools/i18nAutoReplacement');
 const { flatKeysList } = require('../tools/directoryReader');
 
 (async () => {
-  // 检索中文的文件夹
-  const directoryPath = 'D:\\Projects\\UMC\\dev\\umc-web\\src\\views\\fg\\template';
-  const excludeDirectory = ['node_modules', 'backend-emp', 'frontend-emp', 'security-emp'];
-  const excludeFile = ['ChannelNumItem-emp.vue'];
-  const includeExt = ['vue'];
+  // 检索中文的文件夹，此处可以对应autoPlacer，用于检查刚才替换漏掉的中文；
+  const {
+    directoryPath,
+    excludeDirectory,
+    excludeFile,
+    includeExt,
+    additionalFileList
+  } = autoReplacer;
 
-  // 额外的文件
-  const additionalFileList = [
-    // 'D:\\Projects\\UMC\\dev\\umc-web\\src\\components\\Collapse.vue',
-    // 'D:\\Projects\\UMC\\dev\\umc-web\\src\\components\\PageLimitsItem.vue'
-  ];
-
-  // 是否忽略注释里的内容；
-  const excludeComments = true;
-
-  // 单次任务检索的文件数
-  const taskBlockSize = 10;
+  const {
+    excludeComments,
+    taskBlockSize
+  } = chineseInspector;
 
   logger(`##### Start chinese inspector #####`);
 

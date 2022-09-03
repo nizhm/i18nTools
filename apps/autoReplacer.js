@@ -19,46 +19,20 @@ const { logger } = require('../logger');
 const { flatAllKeys } = require('../tools/directoryReader');
 const path = require('path');
 
+const { autoReplacer } = require('./config');
+
 (async () => {
-  // lang文件位置
-  const langDataList = [
-    'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\zh.js',
-
-    'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\aimEdit\\zh.js',
-    'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\contact\\zh.js',
-    'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\fgEdit\\zh.js',
-    'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\fgTemplate\\zh.js',
-    'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\headerIcon\\zh.js',
-    'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\loginPage\\zh.js',
-    'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\rmsEdit\\zh.js',
-    // 'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\statistics\\zh.js',
-    'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\templateManage\\zh.js',
-    'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\utplSend\\zh.js',
-    'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\utpltemplate\\zh.js'
-  ];
-  const additionalKeyList = [
-    { i18nKey: 'cmcc', cnValue: '中国移动' },
-    { i18nKey: 'cucc', cnValue: '中国联通' },
-    { i18nKey: 'ctcc', cnValue: '中国电信' }
-  ];
-
-  // 需替换的文件所在文件夹
-  const directoryPath = 'D:\\Projects\\UMC\\dev\\umc-web\\src\\views\\sendManage';
-  const excludeDirectory = ['node_modules', 'backend-emp', 'frontend-emp', 'security-emp'];
-  const excludeFile = ['ChannelNumItem-emp.vue'];
-  const includeExt = ['vue', 'js'];
-
-  // 额外的文件
-  const additionalFileList = [
-    // 'D:\\Projects\\UMC\\dev\\umc-web\\src\\components\\Collapse.vue',
-    // 'D:\\Projects\\UMC\\dev\\umc-web\\src\\components\\PageLimitsItem.vue'
-  ];
-
-  // 单次任务处理的文件数量
-  const taskBlockSize = 10;
-
-
-  const i18nImport = `import { i18n } from '@/main'`;
+  const {
+    langDataList,
+    additionalKeyList,
+    directoryPath,
+    excludeDirectory,
+    excludeFile,
+    includeExt,
+    additionalFileList,
+    taskBlockSize,
+    i18nImport
+  } = autoReplacer;
 
   // 获取中文i18n文件，并转换格式
   const flatCnData = [];
@@ -133,13 +107,13 @@ const path = require('path');
       currentFileCount++;
       logger(`current file:${file.fileName} (${currentFileCount}/${totalFileCount})`);
 
-      const vueComponent = file.fileContent;
-      const {
-        template,
-        script
-      } = vueComponent;
-
       for(const replacement of replacementList) {
+        const vueComponent = file.fileContent;
+        const {
+          template,
+          script
+        } = vueComponent;
+
         const {
           templateAttrReg,
           templateAttrReplacement,
@@ -228,8 +202,8 @@ const path = require('path');
       currentFileCount++;
       logger(`current file:${file.fileName} (${currentFileCount}/${totalFileCount})`);
 
-      const fileContent = file.fileContent;
       for(const replacement of replacementList) {
+        const fileContent = file.fileContent;
         const {
           jsReg,
           jsReplacement
