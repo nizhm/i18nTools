@@ -15,7 +15,10 @@ const { logger } = require('../logger');
 const path = require('path');
 
 const { replaceComments } = require('../tools/i18nAutoReplacement');
+
 const { flatKeysList } = require('../tools/directoryReader');
+
+const { chineseReg, nonChineseReg, chineseMark } = require('../tools/i18nInspection');
 
 (async () => {
   // 检索中文的文件夹，此处可以对应autoPlacer，用于检查刚才替换漏掉的中文；
@@ -82,13 +85,16 @@ const { flatKeysList } = require('../tools/directoryReader');
       if (excludeComments) {
         fileText = replaceComments(fileText);
       }
-      const chineseReg = /[\u4e00-\u9fa5，；。：]+/g;
       let matches = fileText.match(chineseReg) || [];
       chineseList.push(...matches);
     }
   }
 
   chineseList = [...new Set(chineseList)];
+  const specialChar = chineseMark + '/[]?!';
+  chineseList = chineseList.filter(el => !(el.length === 1 && specialChar.includes(el)));
+  // writer('../output/chinese1.json', JSON.stringify(chineseList, null, 2));
+  // return;
 
   const langPath = 'D:\\Projects\\UMC\\umc-web\\src\\lang';
 
@@ -140,9 +146,9 @@ const { flatKeysList } = require('../tools/directoryReader');
     // ['shortChain']
   ];
   const langList = flatKeysList(cnData, moduleLevel);
-  const notHanZiReg = /[^\u4e00-\u9fa5]/g;
+  const nonChineseReg = /[^\u4e00-\u9fa5]/g;
   const cnList = langList.map(el => {
-    const text = el.cnValue.replace(notHanZiReg, '');
+    const text = el.cnValue.replace(nonChineseReg, '');
     el.text = text;
     return el;
   });
@@ -152,7 +158,7 @@ const { flatKeysList } = require('../tools/directoryReader');
     noDirectKey: []
   };
   for(const chinese of chineseList) {
-    const cn = chinese.replace(notHanZiReg, '');
+    const cn = chinese.replace(nonChineseReg, '');
     const item = cnList.find(el => el.text === cn);
     if (item && item.text) {
       chineseInfo.existKey.push(item);
