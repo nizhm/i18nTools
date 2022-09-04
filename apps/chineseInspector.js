@@ -93,7 +93,7 @@ const { chineseReg, nonChineseReg, chineseMark } = require('../tools/i18nInspect
   chineseList = [...new Set(chineseList)];
   const specialChar = chineseMark + '/[]?!';
   chineseList = chineseList.filter(el => !(el.length === 1 && specialChar.includes(el)));
-  // writer('../output/chinese1.json', JSON.stringify(chineseList, null, 2));
+  // writer('../output/chinese.json', JSON.stringify(chineseList, null, 2));
   // return;
 
   const langPath = 'D:\\Projects\\UMC\\umc-web\\src\\lang';

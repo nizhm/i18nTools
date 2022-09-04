@@ -118,11 +118,13 @@ const chineseMark = '·！￥……（）——【】、；：‘’“”，《
 // 中文及中文特殊字符
 const chineseAndMark = chinese + chineseMark;
 // 单独使用的中文
-const singleChinese = new RegExp(`(?<![${chineseAndMark}])[${chinese}](?!${chineseAndMark})`, 'g');
-// 空格隔开的两个字
-const spaceTwoChinese = new RegExp(`[${chinese}][ ]+[${chinese}]`, 'g');
+const singleChinese = new RegExp(`(?<![${chinese}])[${chinese}](?!${chinese})`, 'g');
+// 空格隔开的中文
+const spaceChinese = new RegExp(`[${chinese}][ ]+([ ]+|[${chinese}]+)*[${chinese}]`, 'g');
 // 纯中文句子
 const chineseSentence = new RegExp(`[${chineseAndMark}/]+[?!]?`, 'g');
+// 中文中还有英文、数字；
+const chineseSentenceMixedEnNumber = new RegExp(`[\\w－ *AB.-]*[${chineseAndMark}]+([A-Za-z-_/.]+|[0-9-_:/~－.]+|[${chineseAndMark}]+)*[${chineseAndMark}]+[\\w－ ]*[?!]?`, 'g');
 // 数字开头的句子
 const leftNumber = new RegExp(`(?<![\\w\\d])[\\d]?[${chineseAndMark}]+`, 'g');
 // 英文在句子中间
@@ -154,17 +156,19 @@ const cnAndDigitSentence = new RegExp(
 );
 const chineseReg = new RegExp(
   [
-    // spaceTwoChinese.source,
-    cnAndEnSentence.source,
-    cnAndDigitSentence.source,
-    chineseSentence.source,
+    spaceChinese.source,
+    // cnAndEnSentence.source,
+    // cnAndDigitSentence.source,
+    chineseSentenceMixedEnNumber.source,
+    // chineseSentence.source,
     // leftNumber.source,
+    singleChinese.source
   ].join('|'),
   'g'
 );
 const chineseRegList = [
   singleChinese,
-  spaceTwoChinese,
+  spaceChinese,
   chineseSentence,
   cnAndEnSentence,
 ];
