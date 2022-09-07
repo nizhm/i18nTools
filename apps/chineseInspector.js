@@ -32,7 +32,8 @@ const { chineseReg, nonChineseReg, chineseMark } = require('../tools/i18nInspect
 
   const {
     excludeComments,
-    taskBlockSize
+    taskBlockSize,
+    additionalLangFileList
   } = chineseInspector;
 
   logger(`##### Start chinese inspector #####`);
@@ -121,9 +122,15 @@ const { chineseReg, nonChineseReg, chineseMark } = require('../tools/i18nInspect
   }
 
   const cnData = {};
+  const twData = {};
+  const enData = {};
   for(const [, files] of Object.entries(transFiles)) {
     const cn = require(files['zh.js']);
+    const tw = require(files['zhCHT.js']);
+    const en = require(files['en.js']);
     Object.assign(cnData, cn);
+    Object.assign(twData, tw);
+    Object.assign(enData, en);
   }
 
   const moduleLevel = [
@@ -143,13 +150,18 @@ const { chineseReg, nonChineseReg, chineseMark } = require('../tools/i18nInspect
     // ['cm'],
     // ['auditManage'],
     // ['monitoringCenter'],
-    // ['shortChain']
+    // ['shortChain'],
+    // ['list'],
+    // ['media'],
+    // ['send'],
   ];
   const langList = flatKeysList(cnData, moduleLevel);
   const nonChineseReg = /[^\u4e00-\u9fa5]/g;
   const cnList = langList.map(el => {
     const text = el.cnValue.replace(nonChineseReg, '');
     el.text = text;
+    el.twValue = eval(`twData.${el.i18nKey}`);
+    el.enValue = eval(`enData.${el.i18nKey}`);
     return el;
   });
 
@@ -167,6 +179,48 @@ const { chineseReg, nonChineseReg, chineseMark } = require('../tools/i18nInspect
 
     chineseInfo.noDirectKey.push(chinese);
   }
+
+  let cnJs = {};
+  let twJs = {};
+  let enJs = {};
+  for(const item of chineseInfo.existKey) {
+    const { i18nKey, cnValue, twValue, enValue } = item;
+    const [module, key] = i18nKey.split('.');
+    if (!key) {
+      cnJs[module] = cnValue;
+      twJs[module] = twValue;
+      enJs[module] = enValue;
+    } else {
+      if (!cnJs[module]) {
+        cnJs[module] = {};
+      }
+      if (!twJs[module]) {
+        twJs[module] = {};
+      }
+      if (!enJs[module]) {
+        enJs[module] = {};
+      }
+      cnJs[module][key] = cnValue;
+      twJs[module][key] = twValue;
+      enJs[module][key] = enValue;
+    }
+  }
+
+  function jsonToJS(json) {
+    json = JSON.stringify(json, null, 2);
+    json = json
+      .replace(/"\S*":/g, key => key.replace(/"/g, ''))
+      .replace(/'/g, "\\'")
+      .replace(/&nbsp;/g, "")
+      .replace(/"/g, "'");
+    return `module.exports = ${json}\n`;
+  }
+  cnJs = jsonToJS(cnJs);
+  twJs = jsonToJS(twJs);
+  enJs = jsonToJS(enJs);
+  writer('../output/exists_cn.js', cnJs);
+  writer('../output/exists_tw.js', twJs);
+  writer('../output/exists_en.js', enJs);
 
   logger(`Total found chinese:${chineseList.length}`);
   writer('../output/chinese.json', JSON.stringify(chineseInfo, null, 2));
