@@ -103,9 +103,15 @@ const filterVariableItem = (keyList = []) => {
   return [list, variableItemList];
 };
 
+const replaceStyle = str => {
+  str = str.replace(styleTagReg, '');
+  return str;
+};
+
 module.exports = {
   replaceComments,
   VueComponent,
   keyToReplacement,
-  filterVariableItem
+  filterVariableItem,
+  replaceStyle
 }

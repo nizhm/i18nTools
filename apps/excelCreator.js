@@ -22,7 +22,7 @@ const { logger } = require('../logger');
     { header: 'key', width: 25 }
   ];
 
-  const langPath = 'D:\\Projects\\UMC\\umc-web\\src\\lang';
+  const langPath = 'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang';
 
   const excelFileName = path.basename(langPath);
 
@@ -42,6 +42,7 @@ const { logger } = require('../logger');
     }
   );
   const files = extractFiles(langData);
+  writer('../output/test.json', JSON.stringify(files, null, 2));
   const jsFiles = files['js'];
   const transFiles = {};
   for(const jsFile of jsFiles) {
@@ -81,7 +82,8 @@ const { logger } = require('../logger');
     ['cm'],
     ['auditManage'],
     ['monitoringCenter'],
-    ['shortChain']
+    ['shortChain'],
+    ['entWechat']
   ];
   let langList = flatKeysList(cnData, moduleLevel);
   const twEmptyList = [];

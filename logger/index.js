@@ -15,6 +15,25 @@ const logger = str => {
   );
 };
 
+const errorLog = e => {
+  if (!(e instanceof Error)) {
+    logger(e);
+    return;
+  }
+  const msg = `\n[${new Date().toLocaleString()}] ` + e.message;
+  console.trace(e);
+  setTimeout(
+    () => {
+      appendFileSync(
+        `${__dirname}/logger.log`,
+        e,
+        'utf8',
+        err => { if (err) { console.trace(err); } }
+      );
+    }
+  );
+};
+
 module.exports = {
   logger
 }

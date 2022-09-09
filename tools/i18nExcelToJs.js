@@ -9,7 +9,7 @@ const excelToJs = async (
 ) => {
   const defaultOption = {
     // Excel文件名；
-    source: '../../input/模块管理.xlsx',
+    source: '../../input/多语言繁英翻译.xlsx',
     // 是否保存每行数据处理结果到文件
     resultFile: false,
     // 因为无key值而被忽略的行信息是否保存到文件
@@ -22,6 +22,8 @@ const excelToJs = async (
     filterDevExist: false,
     // 是否删除翻译中多余的空格（trim方法）
     trimText: true,
+    // 开发环境公共文件位置
+    devCommonPath: 'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\zh.js',
     // 开发环境的文件位置
     devDataFile_zh: 'D:\\Projects\\UMC\\umc-web\\src\\lang\\utplzh.js',
     devDataFile_zhCHT: 'D:\\Projects\\UMC\\umc-web\\src\\lang\\utplzhCHT.js',
@@ -42,6 +44,7 @@ const excelToJs = async (
   const deleteRowsFile = opt.deleteRowsFile;
   const sameKeyDiffContentRowsFile = opt.sameKeyDiffContentRowsFile;
   const filterDevExist = opt.filterDevExist;
+  const devCommonPath = opt.devCommonPath;
   const devDataFile = opt.devDataFile_zh;
   const trimText = opt.trimText;
 
@@ -191,6 +194,21 @@ const excelToJs = async (
       logger('Do not add new entry!');
       return
     }
+  }
+
+  // 过滤公共的翻译
+  {
+    const commonData = require(devCommonPath);
+    const commonValues = Object.values(commonData);
+    const commonList = [];
+    dataList = dataList.filter(({ cn }) => {
+      if (commonValues.includes(cn)) {
+        commonList.push(cn);
+        return false;
+      }
+      return true;
+    });
+    writer(`../../output/${moduleName}_common.txt`, commonList.join('\n'));
   }
 
   const cnData = {},

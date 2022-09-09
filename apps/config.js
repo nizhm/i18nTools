@@ -5,6 +5,7 @@ module.exports = {
     // lang文件位置
     langDataList: [
       'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\zh.js',
+      // 'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\cm\\zh.js',
 
       'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\aimEdit\\zh.js',
       'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\contact\\zh.js',
@@ -16,7 +17,9 @@ module.exports = {
       // 'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\statistics\\zh.js',
       'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\templateManage\\zh.js',
       'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\utplSend\\zh.js',
-      'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\utpltemplate\\zh.js'
+      'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\utpltemplate\\zh.js',
+      'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\entWechat\\zh.js',
+      // 'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\cm\\zh.js'
     ],
     // 额外的key
     additionalKeyList: [
@@ -25,7 +28,7 @@ module.exports = {
       { i18nKey: 'ctcc', cnValue: '中国电信' }
     ],
     // 需替换的文件所在文件夹
-    directoryPath: 'D:\\Projects\\UMC\\dev\\umc-web\\src\\views\\buswechat\\groupSendManage\\groupTemplateNews',
+    directoryPath: 'D:\\Projects\\UMC\\dev\\umc-web\\src\\views\\cm\\security',
     excludeDirectory: ['node_modules', 'backend-emp', 'frontend-emp', 'security-emp'],
     excludeFile: ['ChannelNumItem-emp.vue'],
     includeExt: ['vue'],
@@ -33,7 +36,7 @@ module.exports = {
     additionalFileList: [
       // 'D:\\Projects\\UMC\\dev\\umc-web\\src\\components\\Collapse.vue',
       // 'D:\\Projects\\UMC\\dev\\umc-web\\src\\components\\PageLimitsItem.vue'
-      'D:\\Projects\\UMC\\dev\\umc-web\\src\\views\\buswechat\\groupSendManage\\group-send-gather.vue'
+      // 'D:\\Projects\\UMC\\dev\\umc-web\\src\\views\\buswechat\\groupSendManage\\group-send-gather.vue'
     ],
     // 单次任务处理的文件数量
     taskBlockSize: 10,
@@ -79,9 +82,9 @@ module.exports = {
     taskBlockSize: 10,
     // 额外的文件
     additionalLangFileList: [
-      'D:\\Projects\\UMC\\umc-rms-editor\\src\\list\\lang\\zh.js',
-      'D:\\Projects\\UMC\\umc-rms-editor\\src\\media\\lang\\zh.js',
-      'D:\\Projects\\UMC\\umc-rms-editor\\src\\send\\lang\\zh.js'
+      // 'D:\\Projects\\UMC\\umc-rms-editor\\src\\list\\lang\\zh.js',
+      // 'D:\\Projects\\UMC\\umc-rms-editor\\src\\media\\lang\\zh.js',
+      // 'D:\\Projects\\UMC\\umc-rms-editor\\src\\send\\lang\\zh.js'
     ],
   }
 }

@@ -14,7 +14,10 @@ const { logger } = require('../logger');
 
 const path = require('path');
 
-const { replaceComments } = require('../tools/i18nAutoReplacement');
+const {
+  replaceComments,
+  replaceStyle
+} = require('../tools/i18nAutoReplacement');
 
 const { flatKeysList } = require('../tools/directoryReader');
 
@@ -83,6 +86,9 @@ const { chineseReg, nonChineseReg, chineseMark } = require('../tools/i18nInspect
         continue;
       }
 
+      // 去掉style
+      fileText = replaceStyle(fileText);
+
       if (excludeComments) {
         fileText = replaceComments(fileText);
       }
@@ -92,12 +98,13 @@ const { chineseReg, nonChineseReg, chineseMark } = require('../tools/i18nInspect
   }
 
   chineseList = [...new Set(chineseList)];
+  logger(JSON.stringify(chineseList))
   const specialChar = chineseMark + '/[]?!';
   chineseList = chineseList.filter(el => !(el.length === 1 && specialChar.includes(el)));
   // writer('../output/chinese.json', JSON.stringify(chineseList, null, 2));
   // return;
 
-  const langPath = 'D:\\Projects\\UMC\\umc-web\\src\\lang';
+  const langPath = 'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang';
 
   // 开始读文件
   const langData = directoryReader(
@@ -147,7 +154,8 @@ const { chineseReg, nonChineseReg, chineseMark } = require('../tools/i18nInspect
     ['templateManage'],
     ['utplSend'],
     ['utpltemplate'],
-    // ['cm'],
+    ['cm'],
+    ['entWechat'],
     // ['auditManage'],
     // ['monitoringCenter'],
     // ['shortChain'],
