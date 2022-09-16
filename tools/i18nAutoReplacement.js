@@ -80,7 +80,7 @@ class Replacement {
 
     this.jsReg = new RegExp(`['"\`]${value}['"\`]`, 'g');
     this.scriptReplacement = `this.$t('${i18nKey}')`;
-    this.jsReplacement = `i18n.tc('${i18nKey}')`;
+    this.jsReplacement = `i18n.t('${i18nKey}')`;
   }
 }
 
