@@ -152,7 +152,7 @@ const { autoReplacer } = require('./config');
             function (match, offset, input) {
               file.isModified = true;
               const beforeExport = offset < input.search('export default');
-              if (beforeExport) {
+              if (true) {
                 if (input.search('i18n') === -1) {
                   file.needI18nImport = true
                 }
