@@ -2,28 +2,24 @@ const {
   directoryReader,
   extractFiles,
   flatKeysList
-} = require('../tools/directoryReader');
+} = require('../../tools/directoryReader');
 
-const { listToExcel } = require('../tools/i18nJsToExcel');
+const { listToExcel } = require('../../tools/i18nJsToExcel');
 
 const { writeFileSync: writer } = require('fs');
 
 const path = require('path');
 
-const { logger } = require('../logger');
+const { logger } = require('../../tools/logger');
+
+const { excelCreator } = require('../config');
 
 (async () => {
-  const header = [
-    { header: '模块', width: 20 },
-    { header: '元素显示中文', width: 45 },
-    { header: '元素显示繁体', width: 45 },
-    { header: '元素显示英文', width: 45 },
-    { header: '_key', width: 25 },
-    { header: 'key', width: 25 }
-  ];
-
-  const langPath = 'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang';
-
+  const {
+    header,
+    langPath,
+    moduleLevel
+  } = excelCreator;
   const excelFileName = path.basename(langPath);
 
   const excludeDirectory = [
@@ -32,8 +28,8 @@ const { logger } = require('../logger');
   ];
   const includeExt = ['js'];
 
-  // 开始读文件
-  logger('#####  Start to Read lang Files #####');
+  // 开始读lang文件
+  logger('#####  Start excelCreator #####');
   const langData = directoryReader(
     langPath,
     {
@@ -42,7 +38,6 @@ const { logger } = require('../logger');
     }
   );
   const files = extractFiles(langData);
-  writer('../output/test.json', JSON.stringify(files, null, 2));
   const jsFiles = files['js'];
   const transFiles = {};
   for(const jsFile of jsFiles) {
@@ -53,6 +48,7 @@ const { logger } = require('../logger');
     transFiles[directoryName][fileName] = filePath;
   }
 
+  // 提取翻译信息
   const cnData = {};
   const twData = {};
   const enData = {};
@@ -65,29 +61,11 @@ const { logger } = require('../logger');
     Object.assign(enData, en);
   }
 
-  const moduleLevel = [
-    // [],
-    // ['common'],
-    ['aimEdit'],
-    ['contact'],
-    ['fgEdit'],
-    ['fgTemplate'],
-    ['headerIcon'],
-    ['loginPage'],
-    ['rmsEdit'],
-    ['statistics'],
-    ['templateManage'],
-    ['utplSend'],
-    ['utpltemplate'],
-    ['cm'],
-    ['auditManage'],
-    ['monitoringCenter'],
-    ['shortChain'],
-    ['entWechat']
-  ];
+  // 将简体数据的key转换成i18nKey
   let langList = flatKeysList(cnData, moduleLevel);
   const twEmptyList = [];
   const enEmptyList = [];
+  // 以简体数据的key为标准，从繁体、英文中提取数据
   for(const item of langList) {
     const { i18nKey } = item;
     const splitor = '.';
@@ -108,6 +86,7 @@ const { logger } = require('../logger');
     item['twValue'] = twValue;
     item['enValue'] = enValue;
 
+    // 如果繁体、英文中对应key值没有数据（包括空字符及undefined），加到对应的空缺List；
     if (!twValue) {
       twEmptyList.push({ ...item });
     }
@@ -116,6 +95,7 @@ const { logger } = require('../logger');
     }
   }
 
+  // 发现繁体、英文中有空缺值时，生成json
   const twEmptyCount = twEmptyList.length;
   const enEmptyCount = enEmptyList.length;
   if (twEmptyCount) {
@@ -129,10 +109,15 @@ const { logger } = require('../logger');
     logger(`Find \`en_Empty.json\` in the output directory`);
   }
 
+  // 按表头顺序排列数据
+  const headerLen = header.length;
   langList = langList.map(({ moduleName, cnValue, twValue, enValue, _key }) => {
-    return [moduleName, cnValue, twValue, enValue, _key, _key];
+    const row = [moduleName, cnValue, twValue, enValue, _key, _key];
+    row.length = headerLen;
+    return row;
   });
 
+  // 生成excel
   await listToExcel(
     header,
     langList,
@@ -142,5 +127,5 @@ const { logger } = require('../logger');
     }
   );
   logger(`Excel file \`${excelFileName}_*.xlsx\` has been created in the \`output\` directory successfully!`);
-  logger('#####  Finish Read lang Files #####');
+  logger('#####  Finish excelCreator #####');
 })();

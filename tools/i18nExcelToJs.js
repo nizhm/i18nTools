@@ -1,6 +1,6 @@
 const { writeFileSync: writer, mkdirSync } = require('fs');
 const ExcelJS = require('exceljs');
-const { logger } = require('../logger');
+const { logger } = require('./logger');
 
 const excelToJs = async (
   moduleName,

@@ -10,7 +10,7 @@ const {
   writeFileSync: writer
 } = require('fs');
 
-const { logger } = require('../logger');
+const { logger } = require('../tools/logger');
 
 const path = require('path');
 
@@ -144,24 +144,22 @@ const { chineseReg, nonChineseReg, chineseMark } = require('../tools/i18nInspect
     [],
     // ['common'],
     ['aimEdit'],
+    ['auditManage'],
+    ['cm'],
     ['contact'],
+    ['entWechat'],
     ['fgEdit'],
     ['fgTemplate'],
     ['headerIcon'],
     ['loginPage'],
+    ['monitorCenter'],
     ['rmsEdit'],
+    ['shortChain'],
     ['statistics'],
+    ['systemManage'],
     ['templateManage'],
     ['utplSend'],
-    ['utpltemplate'],
-    ['cm'],
-    ['entWechat'],
-    // ['auditManage'],
-    // ['monitoringCenter'],
-    // ['shortChain'],
-    // ['list'],
-    // ['media'],
-    // ['send'],
+    ['utpltemplate']
   ];
   const langList = flatKeysList(cnData, moduleLevel);
   const nonChineseReg = /[^\u4e00-\u9fa5]/g;

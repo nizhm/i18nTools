@@ -1,4 +1,5 @@
 const ExcelJS = require('exceljs');
+const path = require('path')
 
 const listToExcel = async (
   header = [],
@@ -7,15 +8,18 @@ const listToExcel = async (
 ) => {
   const defaultOption = {
     fileName: 'lang',
-    sheetName: 'lang'
+    sheetName: 'lang',
+    isSoleFile: true
   };
   const opt = Object.assign({}, defaultOption, option);
   const {
     fileName,
+    isSoleFile,
     sheetName
   } = opt;
 
-  const output = `../output/${fileName}_${Date.now()}.xlsx`;
+  const nameSuffix = isSoleFile ? `_${Date.now()}` : '';
+  const output = path.resolve(`${__dirname}../../output/${fileName}${nameSuffix}.xlsx`);
   const workbook = new ExcelJS.Workbook();
   const sheet = workbook.addWorksheet(sheetName);
   sheet.columns = header;

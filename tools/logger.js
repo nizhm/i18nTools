@@ -1,4 +1,8 @@
 const { appendFileSync } = require('fs');
+const path = require('path')
+
+const outputTarget = path.resolve(`${__dirname}/../logger/logger.log`);
+console.log(outputTarget)
 
 const logger = str => {
   const msg = `\n[${new Date().toLocaleString()}] ` + str;
@@ -6,7 +10,7 @@ const logger = str => {
   setTimeout(
     () => {
       appendFileSync(
-        `${__dirname}/logger.log`,
+        outputTarget,
         msg,
         'utf8',
         err => { if (err) { console.trace(err); } }
@@ -25,7 +29,7 @@ const errorLog = e => {
   setTimeout(
     () => {
       appendFileSync(
-        `${__dirname}/logger.log`,
+        outputTarget,
         e,
         'utf8',
         err => { if (err) { console.trace(err); } }

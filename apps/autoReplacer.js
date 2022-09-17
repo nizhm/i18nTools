@@ -14,7 +14,7 @@ const {
   filterVariableItem
 } = require('../tools/i18nAutoReplacement');
 
-const { logger } = require('../logger');
+const { logger } = require('../tools/logger');
 
 const { flatAllKeys } = require('../tools/directoryReader');
 const path = require('path');
