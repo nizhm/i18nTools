@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/nizhm/i18n.git"
+    "url": "git+https://github.com:nizhm/i18nTools.git"
   },
   "keywords": [
     "i18n"
@@ -18,9 +18,9 @@
   "author": "nizhm",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/nizhm/i18n/issues"
+    "url": "https://github.com/nizhm/i18nTools/issues"
   },
-  "homepage": "https://github.com/nizhm/i18n#readme",
+  "homepage": "https://github.com/nizhm/i18nTools#readme",
   "// exceljs": "https://github.com/exceljs/exceljs#readme",
   "dependencies": {
     "exceljs": "^4.3.0"
