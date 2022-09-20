@@ -1,4 +1,4 @@
-# i18n Tool
+# i18n Tools
 
 ## 使用说明：
 
