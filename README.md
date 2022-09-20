@@ -9,7 +9,7 @@
   自动化i18n替换vue文件
 
 #使用说明：
-1. 安装依赖
-npm install
+1. 初始化项目环境及安装依赖
+npm run init
 
 2. 所有应用在apps文件夹
