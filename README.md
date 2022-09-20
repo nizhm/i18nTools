@@ -10,6 +10,6 @@
 
 #使用说明：
 1. 初始化项目环境及安装依赖
-npm run init
+`npm run init`
 
 2. 所有应用在apps文件夹
