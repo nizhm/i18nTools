@@ -23,6 +23,7 @@ neededDirs.forEach(dirName => {
   console.log(`The \`${dirName}\` directory is available!`);
 });
 
+console.log('> npm install');
 console.log('Running `npm install`');
 exec(
   'npm install',
@@ -32,7 +33,6 @@ exec(
       return;
     }
 
-    console.log('> npm install');
     console.log(stdout);
   }
 );
