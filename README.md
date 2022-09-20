@@ -20,4 +20,7 @@
 ### 3.autoReplacer
 
   自动化i18n替换vue文件
+  
+### 4.chineseInspector
+  检索指定文件中的中文字符串
 
