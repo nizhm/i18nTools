@@ -2,7 +2,7 @@
 
 ## v2.0改动：
 
-### 1.只保留js版工具(python版在v1.0分支)
+### 1.只保留js版应用(python版在v1.0分支)
 
 ### 2.Refactor
 <br/><br/><br/>
@@ -15,7 +15,7 @@ npm run init
 
 ### 2. 所有应用在apps文件夹
 <br/><br/><br/>
-## 主要工具： 
+## 主要应用： 
 
 ### 1.excelKeyFunCreator
 
