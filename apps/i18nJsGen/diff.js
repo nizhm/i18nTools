@@ -65,7 +65,7 @@ const { writeFileSync: writer } = require('fs');
   });
 
   const dataListB = [];
-  workSheetA.getRow(1).eachCell((cell, colNumber) => {
+  workSheetB.getRow(1).eachCell((cell, colNumber) => {
     const text = extractCellText(cell.value);
     switch(text) {
       case cnColumnName:
@@ -81,7 +81,7 @@ const { writeFileSync: writer } = require('fs');
         break;
     }
   })
-  workSheetA.eachRow((row, rowNumber) => {
+  workSheetB.eachRow((row, rowNumber) => {
     // 首行跳过
     if (rowNumber === 1) {
       return;
@@ -99,14 +99,14 @@ const { writeFileSync: writer } = require('fs');
   });
 
   const diffList = []
-  dataListA.forEach((item, index) => {
+  dataListA.forEach(item => {
     const bItem = dataListB.find(el => el.cn === item.cn)
     bItem && item.en !== bItem.en && diffList.push({
-      aItem: item,
-      bItem
+      [sheetNameA]: item,
+      [sheetNameB]: bItem
     })
   })
 
-  const jsonData = diffList.length ? diffList : 'No different item!';
-  writer(`../../output/diff.json`, JSON.stringify(jsonData, null, 2));
+  diffList.unshift({ TotalDiffCount: diffList.length || 'No different item!' })
+  writer(`../../output/diff.json`, JSON.stringify(diffList, null, 2));
 })();
