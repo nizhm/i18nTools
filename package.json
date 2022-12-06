@@ -23,6 +23,8 @@
   "homepage": "https://github.com/nizhm/i18nTools#readme",
   "// exceljs": "https://github.com/exceljs/exceljs#readme",
   "dependencies": {
-    "exceljs": "^4.3.0"
+    "@vue/component-compiler": "^4.2.4",
+    "exceljs": "^4.3.0",
+    "vue-template-compiler": "^2.7.14"
   }
 }
