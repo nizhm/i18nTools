@@ -22,7 +22,8 @@ module.exports = {
       'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\systemManage\\zh.js',
       'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\templateManage\\zh.js',
       'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\utplSend\\zh.js',
-      'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\utpltemplate\\zh.js'
+      'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\utpltemplate\\zh.js',
+      'D:\\Projects\\ChiyuBank\\git\\umc-web\\src\\lang\\rms\\zh.js'
     ],
     // 额外的key
     additionalKeyList: [
@@ -135,5 +136,12 @@ module.exports = {
       { header: 'key', width: 25 }
     ],
     excelFileName: 'chineseListExcel'
+  },
+  // 自动将简体翻译为繁体
+  autoTraditionalizer: {
+    // lang文件夹
+    langDir: 'D:\\Projects\\UMC\\umc-web\\src\\lang',
+    // 在线繁体字转换器
+    transferWeb: 'https://www.aies.cn/'
   }
 }

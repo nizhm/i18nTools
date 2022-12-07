@@ -32,3 +32,6 @@ npm run init
 ### 4.chineseInspector
   检索指定文件中的中文字符串
 
+### 5.autoTraditionalizer
+  利用在线转换器，自动将简体文件翻译成繁体文件（element那份没有简体直接检查繁体文件）；
+

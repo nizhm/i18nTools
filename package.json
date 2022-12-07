@@ -25,6 +25,7 @@
   "dependencies": {
     "@vue/component-compiler": "^4.2.4",
     "exceljs": "^4.3.0",
-    "vue-template-compiler": "^2.7.14"
+    "vue-template-compiler": "^2.7.14",
+    "axios": "^0.21.4"
   }
 }
