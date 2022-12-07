@@ -38,12 +38,13 @@ const {
 
   // 读文件夹、读文件、提取js文件
   const dir = directoryReader(
-    langDir, {
+    langDir,
+    {
       includeExt: ['js'],
     }
   );
   const files = extractFiles(dir);
-  const jsFiles = files.js;
+  const jsFiles = files['js'];
 
   // 提取繁体文件
   const traditionalLangFiles = jsFiles.filter(item => item.fileName.includes('TW') || item.fileName.includes('CHT'));
