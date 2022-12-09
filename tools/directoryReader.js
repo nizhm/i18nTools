@@ -79,6 +79,9 @@ const directoryContentReader = (directory) => {
 };
 
 const directoryReader = (directoryPath, options) => {
+  if (!directoryPath) {
+    return new Directory(directoryPath, directoryPath);
+  }
   excludeDirectory.length = 0;
   includeExt.length = 0;
   excludeFile.length = 0;

@@ -4,26 +4,24 @@ module.exports = {
   autoReplacer: {
     // lang文件位置
     langDataList: [
-      'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\zh.js',
-
-      'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\aimEdit\\zh.js',
-      'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\auditManage\\zh.js',
-      'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\cm\\zh.js',
-      'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\contact\\zh.js',
-      'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\entWechat\\zh.js',
-      'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\fgEdit\\zh.js',
-      'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\fgTemplate\\zh.js',
-      'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\headerIcon\\zh.js',
-      'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\loginPage\\zh.js',
-      'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\monitorCenter\\zh.js',
-      'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\rmsEdit\\zh.js',
-      'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\shortChain\\zh.js',
-      // 'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\statistics\\zh.js',
-      'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\systemManage\\zh.js',
-      'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\templateManage\\zh.js',
-      'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\utplSend\\zh.js',
-      'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang\\utpltemplate\\zh.js',
-      'D:\\Projects\\ChiyuBank\\git\\umc-web\\src\\lang\\rms\\zh.js'
+      'D:\\Projects\\UMC\\umc-web\\src\\lang\\zh.js',
+      'D:\\Projects\\UMC\\umc-web\\src\\lang\\aimEdit\\zh.js',
+      'D:\\Projects\\UMC\\umc-web\\src\\lang\\auditManage\\zh.js',
+      'D:\\Projects\\UMC\\umc-web\\src\\lang\\cm\\zh.js',
+      'D:\\Projects\\UMC\\umc-web\\src\\lang\\contact\\zh.js',
+      'D:\\Projects\\UMC\\umc-web\\src\\lang\\entWechat\\zh.js',
+      'D:\\Projects\\UMC\\umc-web\\src\\lang\\fgEdit\\zh.js',
+      'D:\\Projects\\UMC\\umc-web\\src\\lang\\fgTemplate\\zh.js',
+      'D:\\Projects\\UMC\\umc-web\\src\\lang\\headerIcon\\zh.js',
+      'D:\\Projects\\UMC\\umc-web\\src\\lang\\loginPage\\zh.js',
+      'D:\\Projects\\UMC\\umc-web\\src\\lang\\monitorCenter\\zh.js',
+      'D:\\Projects\\UMC\\umc-web\\src\\lang\\rmsEdit\\zh.js',
+      'D:\\Projects\\UMC\\umc-web\\src\\lang\\shortChain\\zh.js',
+      // 'D:\\Projects\\UMC\\umc-web\\src\\lang\\statistics\\zh.js',
+      'D:\\Projects\\UMC\\umc-web\\src\\lang\\systemManage\\zh.js',
+      'D:\\Projects\\UMC\\umc-web\\src\\lang\\templateManage\\zh.js',
+      'D:\\Projects\\UMC\\umc-web\\src\\lang\\utplSend\\zh.js',
+      'D:\\Projects\\UMC\\umc-web\\src\\lang\\utpltemplate\\zh.js'
     ],
     // 额外的key
     additionalKeyList: [
@@ -32,7 +30,7 @@ module.exports = {
       { i18nKey: 'ctcc', cnValue: '中国电信' }
     ],
     // 需替换的文件所在文件夹
-    directoryPath: 'D:\\Projects\\UMC\\dev\\umc-web\\src\\views\\cm\\frontend',
+    directoryPath: '',
     excludeDirectory: ['node_modules', 'backend-emp', 'frontend-emp', 'security-emp'],
     excludeFile: ['access-account-emp.vue', 'sign-manage-emp.vue'],
     includeExt: ['vue'],
@@ -94,7 +92,7 @@ module.exports = {
   // 读取项目lang数据，并生成excel的工具配置
   excelCreator: {
     // 语言文件位置
-    langPath: 'D:\\Projects\\UMC\\dev\\umc-web\\src\\lang',
+    langPath: 'D:\\Projects\\UMC\\umc-web\\src\\lang',
     // 读取哪些模块的数据（会自从忽略elementLang）
     moduleLevel: [
       [],
