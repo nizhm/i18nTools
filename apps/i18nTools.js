@@ -42,9 +42,15 @@
   // 先输出一次应用列表信息
   outputWriter();
 
-  repl.start({
+  const replServer = repl.start({
     terminal: true,
     eval: myEval,
     writer: outputWriter
+  });
+
+  // .empty 清屏命令
+  replServer.defineCommand('empty', function () {
+    console.clear();
+    outputWriter();
   });
 })();
