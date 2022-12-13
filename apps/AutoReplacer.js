@@ -19,9 +19,10 @@ const { logger } = require('../tools/logger');
 const { flatAllKeys } = require('../tools/directoryReader');
 const path = require('path');
 
-const { autoReplacer } = require('./config');
+const AutoReplacer = async () => {
+  // 每次执行都重新获取配置
+  const { autoReplacer } = require('./config');
 
-(async () => {
   const {
     langDataList,
     additionalKeyList,
@@ -241,4 +242,6 @@ const { autoReplacer } = require('./config');
   // writer('../output/replacement.json', JSON.stringify(replacementList, null, 2));
 
   logger(`##### Finish auto replace #####`);
-})();
+};
+
+module.exports.AutoReplacer = AutoReplacer;

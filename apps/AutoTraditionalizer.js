@@ -12,18 +12,19 @@ const { logger } = require('../tools/logger');
 
 const path = require('path');
 
-const { autoTraditionalizer } = require('./config');
-
 const axios = require('axios');
 
-const {
-  langDir,
-  transferWeb,
-  taskBlockSize
-} = autoTraditionalizer;
-
-(async () => {
+const AutoTraditionalizer = async () => {
   logger(`##### Start auto traditionalizer #####`);
+
+  // 每次执行重新获取配置
+  const { autoTraditionalizer } = require('./config');
+
+  const {
+    langDir,
+    transferWeb,
+    taskBlockSize
+  } = autoTraditionalizer;
 
   // 获取在线繁体转换器html，并提取核心代码
   const { data } = await axios.get(transferWeb);
@@ -74,4 +75,6 @@ const {
   }
 
   logger(`##### Finish auto traditionalizer #####`);
-})();
+};
+
+module.exports.AutoTraditionalizer = AutoTraditionalizer;

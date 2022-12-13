@@ -3,8 +3,6 @@ const {
   extractFiles
 } = require('../tools/directoryReader.js');
 
-const { autoReplacer, chineseInspector } = require('./config');
-
 const {
   readFileSync: reader,
   writeFileSync: writer
@@ -23,7 +21,10 @@ const { flatKeysList } = require('../tools/directoryReader');
 
 const { chineseReg, nonChineseReg, chineseMark } = require('../tools/i18nInspection');
 
-(async () => {
+const ChineseInspector = async () => {
+  // 每次执行都重新获取配置
+  const { autoReplacer, chineseInspector } = require('./config');
+
   // 检索中文的文件夹，此处可以对应autoPlacer，用于检查刚才替换漏掉的中文；
   const {
     directoryPath,
@@ -232,4 +233,6 @@ const { chineseReg, nonChineseReg, chineseMark } = require('../tools/i18nInspect
   writer('../output/chinese.json', JSON.stringify(chineseInfo, null, 2));
   logger(`Find \`chinese.json\` in \`output\``);
   logger(`##### Finish chinese inspector #####`);
-})();
+};
+
+module.exports.ChineseInspector = ChineseInspector;
