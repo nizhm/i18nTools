@@ -1,38 +1,20 @@
-const { access, mkdir } = require('fs');
+const { mkdirSync } = require('fs');
 
-const { exec } = require('child_process');
+const { execSync } = require('child_process');
 
 const neededDirs = ['input', 'output', 'logger'];
 neededDirs.forEach(dirName => {
   const dirPath = `./${dirName}`;
-  access(
-    dirPath,
-    err => {
-      if (err) {
-        mkdir(
-          dirPath,
-          err => {
-            if (err) {
-              console.trace(err);
-            }
-          }
-        );
-      }
-    }
-  );
-  console.log(`The \`${dirName}\` directory is available!`);
+  try {
+    mkdirSync(dirPath, { recursive: true });
+  } catch (e) {
+    console.error(e);
+  }
 });
 
 console.log('> npm install');
-console.log('Running `npm install`');
-exec(
-  'npm install',
-  (err, stdout) => {
-    if (err) {
-      console.trace(err);
-      return;
-    }
+console.log('Running `npm install`......');
+const dataBuffer = execSync('npm install');
+const data = dataBuffer.toString('utf8');
+console.log(data);
 
-    console.log(stdout);
-  }
-);
