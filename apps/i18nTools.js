@@ -3,6 +3,7 @@
 
   // 应用引入
   const Apps = [
+    require('./GitDiff').GitDiff,
     require('./ChineseInspector').ChineseInspector,
     require('./AutoReplacer').AutoReplacer,
     require('./AutoTraditionalizer').AutoTraditionalizer
