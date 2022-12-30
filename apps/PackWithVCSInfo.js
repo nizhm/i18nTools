@@ -24,7 +24,7 @@ try {
         break;
       case 'svn':
         if (data && !data.includes('not a working copy')) {
-          vcsData = data.match(/URL:[^\r\n]*[\r\n]+[^\r\n]*/)[0]
+          vcsData = data.match(/Relative URL:[^\r\n]*/)[0]
         }
         break;
       default:
